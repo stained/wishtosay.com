@@ -1,0 +1,59 @@
+CREATE DATABASE IF NOT EXISTS wishtosay;
+USE wishtosay;
+
+CREATE TABLE IF NOT EXISTS `admin` (
+  `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `email` VARCHAR(1024) NOT NULL,
+  `passwordHash` VARCHAR(1024) NOT NULL
+) DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `country` (
+  `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `country` VARCHAR(1024) NOT NULL,
+  `code` VARCHAR(16) NOT NULL
+) DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `location` (
+  `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `countryId` INT NOT NULL,
+  `city` VARCHAR(1024) NOT NULL,
+  `latitude` FLOAT NOT NULL,
+  `longitude` FLOAT NOT NULL
+) DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `gendertag` (
+  `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `tag` VARCHAR(1024) NOT NULL
+) DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+/*
+CREATE TABLE IF NOT EXISTS `user` (
+  `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `signupTimestamp` INT NOT NULL,
+  `email` VARCHAR(1024) NOT NULL,
+  `passwordHash` VARCHAR(1024) NOT NULL,
+  `locationId` INT NULL,
+  `age` INT NULL DEFAULT 0,
+  `active` BOOL DEFAULT FALSE
+) DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `usergendertag` (
+  `userId` INT NOT NULL,
+  `tagId` INT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS `post` (
+  `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `postTimestamp` INT NOT NULL,
+  `userId` INT NOT NULL,
+  `text` TEXT NOT NULL,
+  `locationId` INT NULL,
+  `age` INT NULL DEFAULT 0,
+  `moderated` BOOL DEFAULT FALSE
+) DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `postgendertag` (
+  `postId` INT NOT NULL,
+  `tagId` INT NOT NULL
+);
+*/

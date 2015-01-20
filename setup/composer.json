@@ -1,0 +1,10 @@
+{
+    "config": {
+        "vendor-dir": "../private/vendor"
+    },
+    "require": {
+        "elasticsearch/elasticsearch": "~1.0",
+        "dabble/dabble": "dev-master",
+        "predis/predis": "1.0.1"
+    }
+}

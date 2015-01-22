@@ -22,7 +22,9 @@
         <script src="/js/jquery.nouislider.all.js"></script>
         <script src="/js/angular.nouislider.js"></script>
         <script src="/js/app.js"></script>
+        <!--
         <script src="/js/parallax.js"></script>
+        -->
     </head>
     <body>
         <div class="filter">
@@ -33,18 +35,7 @@
         </div>
 
         <div class="header parallax-window" data-parallax="scroll" data-image-src="/img/header.jpg" data-win-min-height=195>
-            <div class="header-wish">
-                What do you Wish To Say ...
-            </div>
             <div class="header-wish-subtitle">
-                to anyone, anytime, and anywhere on earth?
-            </div>
-            <div class="header-content-email">
-                Personalized stories to your inbox. Sign up below.
-                <div class="margin-10">
-                    <input type="text" name="email" placeholder="Enter your email address" />
-                    <button>Subscribe Now</button>
-                </div>
             </div>
         </div>
         <div class="content">
@@ -94,13 +85,17 @@
             </div>
         </div>
 
+        <div class="footer-post">
+            <button>I wish to say</button>
+        </div>
+
         <script>
             $(function(){
 
                 var $container = $('.container');
 
                 $container.masonry({
-                    columnWidth: 1,
+                    columnWidth: '.story',
                     itemSelector : '.story'
                 });
 

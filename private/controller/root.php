@@ -15,5 +15,12 @@ class Root
         return $view;
     }
 
+    protected static function toJson($array, $code)
+    {
+        $view = View::load('json', null, $code);
+        $view->setContentType('application/json');
+        $view->set('array', $array);
+        return $view;
+    }
 }
 

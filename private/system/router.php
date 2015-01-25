@@ -38,7 +38,7 @@ class Router
             // has parameters
             $parameters = array_slice($request, 2);
         }
-        
+
         // attempt to load the request
         $class = "\\Controller\\" . ucfirst($request[0]);
 
@@ -56,15 +56,26 @@ class Router
             return Root::base();
         }
 
-        // check if there's a function defined 
+        // check if there's a function defined
         if (empty($request[1]) ||                    // no function specified
-           !method_exists($class, $request[1]) ||   // class does not contain function
-           String::startsWith('_', $request[1]))    // function begins with an underscore -
-                                                    // such functions are considered "private"
+           !method_exists($class, $request[1]) ||    // class does not contain function
+           String::startsWith('_', $request[1]))     // function begins with an underscore -
+                                                     // such functions are considered "private"
         {
             if (!method_exists($class, 'base'))
             {
                 return Root::base();
+            }
+
+            if (!empty($request[1]))
+            {
+                if (is_array($parameters)) {
+                    $parameters = array_merge($parameters, $request[1]);
+                }
+                else
+                {
+                    $parameters = $request[1];
+                }
             }
 
             // load default route in controller

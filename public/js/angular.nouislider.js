@@ -14,7 +14,7 @@ angular.module('nouislider', []).directive('slider', function () {
         link: function (scope, element, attrs) {
             var callback, fromParsed, parsedValue, slider, toParsed;
             slider = $(element);
-            callback = scope.callback ? scope.callback : 'slide';
+            callback = scope.callback ? scope.callback : 'set';
             if (scope.ngFrom != null && scope.ngTo != null) {
                 fromParsed = null;
                 toParsed = null;
@@ -43,7 +43,7 @@ angular.module('nouislider', []).directive('slider', function () {
                     _ref = slider.val(), from = _ref[0], to = _ref[1];
                     fromParsed = parseFloat(from);
                     toParsed = parseFloat(to);
-                    return scope.$apply(function () {
+                    scope.$evalAsync(function() {
                         scope.ngFrom = fromParsed;
                         return scope.ngTo = toParsed;
                     });
@@ -76,7 +76,7 @@ angular.module('nouislider', []).directive('slider', function () {
                 });
                 slider.on(callback, function () {
                     parsedValue = parseFloat(slider.val());
-                    return scope.$apply(function () {
+                    scope.$evalAsync(function() {
                         return scope.ngModel = parsedValue;
                     });
                 });

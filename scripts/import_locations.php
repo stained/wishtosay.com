@@ -26,17 +26,27 @@ if (($handle = fopen("../database/countries.csv", "r")) !== FALSE)
             }
 
             $countries[$code] = $country;
+
+            $searchBody = array(
+                'name' => $country->getCountry(),
+            );
+
+            // insert into elastic search
+            $params = array(
+                'body' => $searchBody,
+                'index' => $searchIndex,
+                'type' => 'country',
+                'id' => $country->getId(),
+                'timestamp' => time()
+            );
+
+            $client->index($params);
+
         }
     }
 
     fclose($handle);
 }
-
-$searchIndex = $elasticSearchConfig['index'];
-
-$params = array('index'=>$searchIndex, 'ignore'=>array(404, 400));
-$client->indices()->delete($params);
-$client->indices()->create($params);
 
 // remove from mysql
 $db->truncate('location');

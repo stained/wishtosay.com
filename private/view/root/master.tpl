@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="app" ng-controller="Root">
+<html lang="en" ng-app="app" ng-controller="MainCtrl">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -13,31 +13,38 @@
         <link rel="stylesheet" href="/css/app.css">
         <link rel="stylesheet" href="/css/jquery.nouislider.css">
         <link rel="stylesheet" href="/css/jquery.nouislider.pips.css">
+        <link rel="stylesheet" href="/css/ng-tags-input.css">
         <link href='http://fonts.googleapis.com/css?family=Milonga' rel='stylesheet' type='text/css'>
 
         <script src="/js/jquery-1.11.2.min.js"></script>
         <script src="/js/angular.min.js"></script>
+        <script src="/js/angular-resource.js">
         <script src="/js/jquery.liblink.js"></script>
         <script src="/js/jquery.masonry.min.js"></script>
         <script src="/js/jquery.nouislider.all.js"></script>
         <script src="/js/angular.nouislider.js"></script>
+        <script src="/js/ng-tags-input.js"></script>
         <script src="/js/app.js"></script>
-        <!--
-        <script src="/js/parallax.js"></script>
-        -->
     </head>
     <body>
         <div class="filter">
-            <input type="text" name="filter" placeholder="Enter locations, genders, or tags to filter on." />
-            <div class="ageFilter">
-                <div slider ng-from="age.from" ng-to="age.to" start=0 end=100 step=1></div>
+            <tags-input class="filter-tags" ng-model="searchFilterTags" on-tag-added="controller.addedAttendee($tag)"
+                        placeholder="Enter locations, genders, or tags to filter on." replace-spaces-with-dashes="false">
+                <auto-complete source="loadTags($query)"></auto-complete>
+            </tags-input>
+            <div class="age-filter">
+                <div slider ng-from="age.from" ng-to="age.to" start=0 end=100 step=1>
+                    <div class="age-filter-baby-icon">
+                    </div>
+                    <div class="age-filter-elderly-icon">
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="header parallax-window" data-parallax="scroll" data-image-src="/img/header.jpg" data-win-min-height=195>
-            <div class="header-wish-subtitle">
-            </div>
+        <div class="header">
         </div>
+
         <div class="content">
             <div class="container">
                 <?php
@@ -51,7 +58,7 @@
                 <div class="story<?php echo ($i == 2 ? ' story-featured': ($i % 10 == 0 ? ' story-advert' : '')); ?>">
                     <div class="story-title">Story <?php echo $i; ?></div>
                     <div class="story-text">
-                        <?php echo $stories[rand(0, 3)]; ?>
+                        <?php echo $stories[rand(0, 2)]; ?>
                     </div>
                     <div class="story-tags">
                         <div class="tag tag-location">Here, Some Place</div>
@@ -86,6 +93,7 @@
         </div>
 
         <div class="footer-post">
+            <div class="footer-post-logo"></div>
             <button>I wish to say</button>
         </div>
 

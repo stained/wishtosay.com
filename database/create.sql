@@ -1,59 +1,60 @@
 CREATE DATABASE IF NOT EXISTS wishtosay;
 USE wishtosay;
 
-CREATE TABLE IF NOT EXISTS `admin` (
+CREATE TABLE IF NOT EXISTS `continent` (
   `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  `email` VARCHAR(1024) NOT NULL,
-  `passwordHash` VARCHAR(1024) NOT NULL
+  `continent` VARCHAR(1024) NOT NULL,
+  `code` VARCHAR(16) NOT NULL
 ) DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `country` (
   `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `country` VARCHAR(1024) NOT NULL,
+  `continentId` INT,
   `code` VARCHAR(16) NOT NULL
 ) DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `location` (
+CREATE TABLE IF NOT EXISTS `subdivision` (
   `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  `countryId` INT NOT NULL,
+  `subdivision` VARCHAR(1024) NOT NULL,
+  `countryId` INT,
+  `continentId` INT,
+  `code` VARCHAR(16) NOT NULL
+) DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `city` (
+  `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `continentId` INT,
+  `countryId` INT,
+  `subdivisionId` INT,
   `city` VARCHAR(1024) NOT NULL,
   `latitude` FLOAT NOT NULL,
   `longitude` FLOAT NOT NULL
 ) DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `gendertag` (
+CREATE TABLE IF NOT EXISTS `gender` (
   `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  `tag` VARCHAR(1024) NOT NULL
+  `gender` VARCHAR(1024) NOT NULL
 ) DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
-
-/*
-CREATE TABLE IF NOT EXISTS `user` (
-  `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  `signupTimestamp` INT NOT NULL,
-  `email` VARCHAR(1024) NOT NULL,
-  `passwordHash` VARCHAR(1024) NOT NULL,
-  `locationId` INT NULL,
-  `age` INT NULL DEFAULT 0,
-  `active` BOOL DEFAULT FALSE
-) DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
-
-CREATE TABLE IF NOT EXISTS `usergendertag` (
-  `userId` INT NOT NULL,
-  `tagId` INT NOT NULL
-);
 
 CREATE TABLE IF NOT EXISTS `post` (
   `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  `postTimestamp` INT NOT NULL,
-  `userId` INT NOT NULL,
   `text` TEXT NOT NULL,
-  `locationId` INT NULL,
-  `age` INT NULL DEFAULT 0,
-  `moderated` BOOL DEFAULT FALSE
+  `timestamp` INT NOT NULL,
+  `upVotes` INT DEFAULT 0,
+  `downVotes` INT DEFAULT 0,
+  `ageFrom` INT DEFAULT 0,
+  `ageTo` INT DEFAULT 100
 ) DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `postgendertag` (
+CREATE TABLE IF NOT EXISTS `posttag` (
+  `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `postId` INT NOT NULL,
-  `tagId` INT NOT NULL
-);
-*/
+  `tagId` INT NOT NULL,
+  `type` ENUM('continent', 'country', 'subdivision', 'city', 'gender', 'tag') NOT NULL
+) DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `tag` (
+  `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `tag` VARCHAR(1024) NOT NULL
+) DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;

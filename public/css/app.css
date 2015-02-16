@@ -13,6 +13,11 @@ body {
     font-weight: 300;
 }
 
+footer h2
+{
+    font-size: medium;
+}
+
 a:link, a:visited, a:active {
     color: #f55e3b;
 }
@@ -23,15 +28,20 @@ a:hover {
 
 .filter {
     width: 100%;
+    position: fixed;
+    top: 0px;
 }
 
 input[type=text] {
     font-size: medium;
+    background: #3d3d3d;
+    color: white;
 }
 
 .age-filter {
     background: #343338;
-    min-height: 50px;
+    min-height: 52px;
+    border-bottom: 1px solid #606060;
 }
 
 .age-filter-elderly-icon {
@@ -41,7 +51,7 @@ input[type=text] {
     position: absolute;
     right: 0px;
     z-index: 10;
-    margin-top: 22px;
+    margin-top: 19px;
 }
 
 .age-filter-baby-icon {
@@ -51,7 +61,7 @@ input[type=text] {
     position: absolute;
     left: 0px;
     z-index: 10;
-    margin-top: 22px;
+    margin-top: 19px;
 }
 
 .copy {
@@ -67,25 +77,33 @@ input[type=text] {
     text-align: center;
     color: white;
     clear: both;
-    margin-bottom: 40px;
+    padding-bottom: 50px;
+    line-height: 25px;
+}
+
+.footer div {
+    text-align: justify;
+}
+
+.container {
+    width: 100%;
+    min-height: 1000px;
 }
 
 .margin-10 {
     margin: 10px;
 }
 
-.footer-content-email {
-    color: white;
+.footer-post textarea {
+    width: 100%;
+    min-height: 26px;
+    padding: 8px;
     font-size: medium;
-}
-
-.footer-content-email input[type=text] {
-    width: 190px;
-    height: 20px;
-    box-shadow: inset 2px 2px 2px #f0f0f0;
-    border-radius: 5px;
-    border: 1px solid #D3D3D3;
-    padding: 4px;
+    border: none;
+    border-top: 1px solid #606060;
+    box-shadow: inset 1px 1px 1px #202020;
+    background: #3d3d3d;
+    color: white;
 }
 
 .footer-post {
@@ -93,53 +111,44 @@ input[type=text] {
     background: #333237;
     position: fixed;
     bottom: 0px;
-    text-align: right;
-    padding: 10px;
-    border-top: 2px solid #232227;
-}
-
-.footer-post-logo {
-    position: absolute;
-    background: url("/img/sprite-sheet.png") 0 40px;
-    width: 53px;
-    height: 40px;
-    top: 5px;
-    left: 5px;
+    text-align: center;
+    border-bottom: 1px solid #606060;
 }
 
 .footer-post button {
-    float: right;
-    margin-right: 20px;
-}
-
-.footer-post button:hover,.footer-content-email button:hover {
-    background: #aa2000;
-}
-
-.footer-post button,.footer-content-email button {
+    position: absolute;
+    right: 4px;
+    bottom: 8px;
+    width: 75px;
     color: white;
     text-align: center;
     height: 32px;
     background: #f55e3b;
+    background-position: center;
     border: 1px solid #cb3816;
     border-radius: 5px;
     font-weight: bold;
     font-size: medium;
 }
 
+.footer-post button:hover {
+    background: #aa2000;
+}
+
 .content {
     border-top: 2px solid #232227;
     position: absolute;
-    background: #fff;
+    background: black;
     width: 100%;
     z-index: -200;
 }
 
 .story {
-    border: 1px solid #798692;
-    border-radius: 5px;
     display: inline-block;
-    background: #fefefe;
+    margin: 1% 0 0 1%;
+    background: #202020;
+    border-radius: 5px;
+    word-wrap: break-word;
 }
 
 .header {
@@ -148,85 +157,84 @@ input[type=text] {
     z-index: -1;
     background: url("/img/header/small.png") no-repeat #343338;
     background-position: center top 0px;
+    border-bottom: 1px solid #606060;
+    box-shadow: inset 1px -1px 1px #202020;
 }
 
 @media only screen and (min-width: 1px) {
     .story {
-        width: 95%;
-        margin: 2%;
+        width: 98%;
     }
 
     .header {
-        height: 90px;
+        height: 95px;
         background: url("/img/header/small.png") no-repeat #343338;
-        background-position: center top 0px;
+        background-position: center top;
     }
 }
 
 @media only screen and (min-width: 500px) {
     .story {
-        width: 95%;
-        margin: 2%;
+        width: 98%;
     }
 
     .header {
         height: 145px;
         background: url("/img/header/med.png") no-repeat #343338;
-        background-position: center top 0px;
+        background-position: center top;
     }
 }
 
 @media only screen and (min-width: 640px) {
     .story {
-        width: 47%;
-        margin: 1%;
+        width: 48.5%;
     }
 
     .story-featured {
-        width: 96%;
+        width: 98%;
     }
 
     .header {
-        height: 185px;
+        height: 280px;
         background: url("/img/header/med-large.png") no-repeat #343338;
-        background-position: center top 0px;
+        background-position: center top 90px;
     }
 }
 
 @media only screen and (min-width: 900px) {
     .story {
-        width: 31%;
-        margin: 1%;
+        width: 32%;
     }
 
     .story-featured {
-        width: 64%;
+        width: 65%;
     }
 
    .header {
-        height: 265px;
+        height: 355px;
         background: url("/img/header/large.png") no-repeat #343338;
-        background-position: center top 0px;
+        background-position: center top 90px;
     }
 }
 
 @media only screen and (min-width: 1200px) {
     .story {
-        width: 22.8%;
-        margin: 1%;
+        width: 23.75%;
     }
 
     .story-featured {
-        width: 47.6%;
+        width: 48.5%;
     }
 }
 
 .story-featured {
     border: 2px solid #dd0000;
+    border-radius: 5px;
 }
 
 .story-advert {
     border: 1px solid #c5c5c5;
+    border-radius: 5px;
 }
 
 .story-text {
@@ -239,9 +247,10 @@ input[type=text] {
 .story-title {
     border-radius: 2px 2px 0 0;
     font-weight: bold;
-    font-size: large;
+    font-size: small;
     padding: 10px;
     color: #798692;
+    float: right;
 }
 
 .story-featured .story-text {
@@ -266,26 +275,10 @@ input[type=text] {
 }
 
 .tag {
-    border-radius: 5px;
-    display: inline-block;
-    padding: 6px;
     margin-top: 5px;
-    background: #4978e2;
-    font-size: small;
-    color: white;
+    margin-right: 5px;
 }
 
-.tag-location {
-    background: #92c849;
-    color: white;
-}
-
-.tag-gender {
-    background: #873ac9;
-    color: white;
-}
-
-.tag-ethnicity {
-    background: #f6d647;
-    color: white;
+button.tag {
+    border: 0px;
 }

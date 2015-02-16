@@ -5,103 +5,138 @@ echo "Importing locations\n";
 $countries = array();
 
 $db = \System\Mysql::getInstance();
+
+$db->truncate('continent');
 $db->truncate('country');
+$db->truncate('subdivision');
+$db->truncate('city');
 
-if (($handle = fopen("../database/countries.csv", "r")) !== FALSE)
-{
+$continents = array();
+$countries = array();
+$subdivisions = array();
+$cities = array();
+$cityLatLons = array();
+
+if (($handle = fopen("../database/geoip_city.csv", "r")) !== FALSE) {
+    $index = 0;
     while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-        $data = array_map("utf8_encode", $data);
 
-        $country = null;
-
-        $code = $data[1];
-
-        if(!isset($countries[$code]))
-        {
-            $country = \Model\Country::getByCode($code);
-
-            if(empty($country))
-            {
-                $country = \Model\Country::createCountry($data[0], $data[1]);
-            }
-
-            $countries[$code] = $country;
-
-            $searchBody = array(
-                'name' => $country->getCountry(),
-            );
-
-            // insert into elastic search
-            $params = array(
-                'body' => $searchBody,
-                'index' => $searchIndex,
-                'type' => 'country',
-                'id' => $country->getId(),
-                'timestamp' => time()
-            );
-
-            $client->index($params);
-
+        if ($index == 0) {
+            $index = 1;
+            continue;
         }
-    }
 
-    fclose($handle);
+        $countryCode = $data[1];
+        $cityName = $data[3];
+        $latLon = array('lat'=>$data[5], 'lon'=>$data[6]);
+
+        $testCode = $countryCode . "_" . $cityName;
+        $cityLatLons[$testCode] = $latLon;
+    }
 }
 
-// remove from mysql
-$db->truncate('location');
-
-// parse each city by linking to country
-if (($handle = fopen("../database/geoip_city.csv", "r")) !== FALSE)
+if (($handle = fopen("../database/geolitelocations.csv", "r")) !== FALSE)
 {
     $index = 0;
-
     while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+
+        if($index == 0)
+        {
+            $index = 1;
+            continue;
+        }
+
         $data = array_map("utf8_encode", $data);
 
-        if(++$index >= 3)
+        $continentCode = $data[2];
+        $continentName = $data[3];
+        $countryCode = $data[4];
+        $countryName = $data[5];
+        $subdivision1Code = $data[6];
+        $subdivision1Name = $data[7];
+        $subdivision2Code = $data[8];
+        $subdivision2Name = $data[9];
+        $cityName = $data[10];
+
+        /*
+        echo $continentCode . ", " .
+             $continentName . ", " .
+            $countryCode . ", " .
+            $countryName . ", " .
+            $subdivision1Code . ", " .
+            $subdivision1Name . ", " .
+            $cityName . "\n";
+        */
+
+        $continent = null;
+        $country = null;
+        $subdivision = null;
+        $city = null;
+
+        // check if continent exists
+        if (isset($continents[$continentCode]))
         {
-            if (empty($data[1]) || empty($data[3]))
+            $continent = $continents[$continentCode];
+        }
+        else
+        {
+            $continent = \Model\Continent::createContinent($continentName, $continentCode);
+            $continents[$continentCode] = $continent;
+        }
+
+        // check if country exists
+        $testCode = $continentCode . "_" . $countryCode;
+        if (isset($countries[$testCode]))
+        {
+            $country = $countries[$testCode];
+        }
+        else
+        {
+            if($countryName == null)
             {
                 continue;
             }
 
-            $code = $data[1];
+            $country = \Model\Country::createCountry($continent, $countryName, $countryCode);
+            $countries[$testCode] = $country;
+        }
 
-            if(isset($countries[$code])) {
-                $country = $countries[$code];
+        // check if subdivision exists
+        $testCode = $continentCode . "_" . $countryCode . "_" . $subdivision1Code;
+        if (isset($subdivisions[$testCode]))
+        {
+            $subdivision = $subdivisions[$testCode];
+        }
+        else
+        {
+            if($subdivision1Name != null)
+            {
+                $subdivision = \Model\Subdivision::createSubdivision($continent, $country, $subdivision1Name, $subdivision1Code);
+                $subdivisions[$testCode] = $subdivision;
+            }
+        }
 
-                // insert into mysql
-                $location = \Model\Location::createLocation(
-                    $country,
-                    $data[3],
-                    floatval($data[5]),
-                    floatval($data[6])
-                );
+        // check if city exists
+        $testCode = $continentCode . "_" . $countryCode . "_" . $subdivision1Code . "_" . $cityName;
+        if (isset($cities[$testCode]))
+        {
+            $city = $cities[$testCode];
+        }
+        else
+        {
+            if ($cityName != null) {
+                $testCode = $countryCode . "_" . $cityName;
 
-                if(!empty($location)) {
-                    $searchBody = array(
-                        'country' => $country->getCountry(),
-                        'city' => $data[3],
-                        'pin' => array(
-                            'location' => array(
-                                'lat' => floatval($data[5]),
-                                'lon' => floatval($data[6])
-                            )
-                        )
-                    );
+                $latitude = -1;
+                $longitude = -1;
 
-                    // insert into elastic search
-                    $params = array(
-                        'body' => $searchBody,
-                        'index' => $searchIndex,
-                        'type' => 'location',
-                        'id' => $location->getId(),
-                        'timestamp' => time()
-                    );
-
-                    $client->index($params);
+                if (isset($cityLatLons[$testCode])) {
+                    $latitude = $cityLatLons[$testCode]['lat'];
+                    $longitude = $cityLatLons[$testCode]['lon'];
                 }
+
+                $city = \Model\City::createCity($continent, $country, $subdivision, $cityName, $latitude, $longitude);
+                $cities[$testCode] = $city;
             }
         }
     }
@@ -110,3 +145,4 @@ if (($handle = fopen("../database/geoip_city.csv", "r")) !== FALSE)
 }
 
 echo "Done importing locations\n";
+

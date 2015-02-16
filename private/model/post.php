@@ -1,8 +1,11 @@
 <?php namespace Model;
 
 use \System\Mysql;
+use \Util\String;
 
 class Post extends root {
+
+    const MAX_REPORTS = 5;
 
     /**
      * @var int
@@ -12,60 +15,37 @@ class Post extends root {
     /**
      * @var string
      */
-    protected $userId;
-
-    /**
-     * @var PostGenderTag[]
-     */
-    protected $genderTags;
-
-    /**
-     * @var int
-     */
-    protected $postTimestamp;
-
-    /**
-     * @var string
-     */
     protected $text;
 
     /**
      * @var int
      */
-    protected $locationId;
+    protected $timestamp;
 
     /**
      * @var int
      */
-    protected $age;
+    protected $upVotes;
 
     /**
-     * @var bool
+     * @var int
      */
-    protected $moderated;
+    protected $downVotes;
 
     /**
-     * @return int
+     * @var int
      */
-    public function getAge()
-    {
-        return $this->age;
-    }
+    protected $ageFrom;
 
     /**
-     * @param bool $force
-     * @return PostGenderTag[]
+     * @var int
      */
-    public function getGenderTags($force = false)
-    {
-        if (!empty($this->genderTags) && !$force)
-        {
-            return $this->genderTags;
-        }
+    protected $ageTo;
 
-        $this->genderTags = PostGenderTag::getForUser($this->id);
-        return $this->genderTags;
-    }
+    /**
+     * @var Posttag[]
+     */
+    protected $postTags;
 
     /**
      * @return int
@@ -73,40 +53,6 @@ class Post extends root {
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * @return Location
-     */
-    public function getLocation()
-    {
-        return Location::getById($this->locationId);
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isModerated()
-    {
-        return $this->moderated;
-    }
-
-    /**
-     * @param bool $moderated
-     * @return $this;
-     */
-    public function setModerated($moderated)
-    {
-        $this->moderated = $moderated;
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getPostTimestamp()
-    {
-        return $this->postTimestamp;
     }
 
     /**
@@ -118,19 +64,75 @@ class Post extends root {
     }
 
     /**
-     * @param string $text
+     * @return int
      */
-    public function setText($text)
+    public function getTimestamp()
     {
-        $this->text = $text;
+        return $this->timestamp;
     }
 
     /**
-     * @return User
+     * @return int
      */
-    public function getUser()
+    public function getUpVotes()
     {
-        return User::getById($this->userId);
+        return $this->upVotes;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDownVotes()
+    {
+        return $this->downVotes;
+    }
+
+    /**
+     * @return $this
+     */
+    public function incrementUpVotes()
+    {
+        $db = Mysql::getInstance();
+        $db->query('UPDATE post SET upVotes = upVotes + 1 WHERE `id` = :id', array('id' => $this->id));
+        $result = $db->query('SELECT upVotes FROM post WHERE `id` = :id', array('id' => $this->id));
+        $this->upVotes = max($result->fetch_one('upVotes'), $this->upVotes);
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function incrementDownVotes()
+    {
+        $db = Mysql::getInstance();
+        $db->query('UPDATE post SET downVotes = downVotes + 1 WHERE `id` = :id', array('id' => $this->id));
+        $result = $db->query('SELECT downVotes FROM post WHERE `id` = :id', array('id' => $this->id));
+        $this->downVotes = max($result->fetch_one('downVotes'), $this->downVotes);
+        return $this;
+    }
+
+    /**
+     * @param Posttag[] $tags
+     * @return $this
+     */
+    public function setTags($tags)
+    {
+        $this->postTags = $tags;
+        return $this;
+    }
+
+    /**
+     * @return Posttag[]
+     */
+    public function getPostTags()
+    {
+        if(!empty($this->postTags))
+        {
+            return $this->postTags;
+        }
+
+        $this->postTags = Posttag::getAllForPost($this);
+        return $this->postTags;
     }
 
     /**
@@ -146,14 +148,61 @@ class Post extends root {
 
         $item = new self;
         $item->id = $data['id'];
-        $item->userId = $data['userId'];
-        $item->postTimestamp = $data['postTimestamp'];
         $item->text = $data['text'];
-        $item->locationId = $data['locationId'];
-        $item->age = $data['age'];
-        $item->moderated = $data['moderated'];
-
+        $item->timestamp = $data['timestamp'];
+        $item->upVotes = $data['upVotes'];
+        $item->downVotes = $data['downVotes'];
+        $item->ageFrom = $data['ageFrom'];
+        $item->ageTo = $data['ageTo'];
         return $item;
+    }
+
+    /**
+     * @param array $tags
+     * @param int $ageFrom
+     * @param int $ageTo
+     * @param int $start
+     * @param int $limit
+     * @return Post[]
+     */
+    public static function getAllForTagsAndAgeRange($tags, $ageFrom, $ageTo, $start = 0, $limit = 25)
+    {
+        $db = Mysql::getInstance();
+
+        $query = 'SELECT p.* FROM post p ';
+        $bindings = array();
+
+        if (!empty($tags))
+        {
+            $index = 0;
+            foreach($tags as $tag)
+            {
+                $tableIndex = 'pt' . $index;
+                $query .= "INNER JOIN posttag {$tableIndex} ON {$tableIndex}.postId = p.id AND " .
+                          "{$tableIndex}.tagId = :tagId{$index} AND {$tableIndex}.type = :type{$index} ";
+
+                $bindings["tagId{$index}"] = $tag['i'];
+                $bindings["type{$index}"] = $tag['ty'];
+                $index++;
+            }
+        }
+
+        $query .= 'WHERE ageTo >= :ageTo AND ageFrom <= :ageFrom GROUP BY p.id ORDER BY timestamp DESC LIMIT :start,:limit';
+        $bindings['ageTo'] = $ageTo;
+        $bindings['ageFrom'] = $ageFrom;
+        $bindings['start'] = $start;
+        $bindings['limit'] = $limit;
+
+        $data = $db->query($query, $bindings);
+
+        $rows = array();
+
+        while ($row = $data->fetch_one())
+        {
+            $rows[] = static::init($row);
+        }
+
+        return $rows;
     }
 
     /**
@@ -170,19 +219,20 @@ class Post extends root {
     }
 
     /**
-     * @param User $user
      * @param string $text
+     * @param int $ageFrom;
+     * @param int $ageTo;
      * @return bool|Post
      */
-    public static function createPost($user, $text)
+    public static function createPost($text, $ageFrom, $ageTo)
     {
         $item = new self;
-        $item->userId = $user->getId();
-        $item->postTimestamp = time();
         $item->text = $text;
-        $item->locationId = $user->getLocation()->getId();
-        $item->age = $user->getAge();
-        $item->moderated = false;
+        $item->ageFrom = $ageFrom;
+        $item->ageTo = $ageTo;
+        $item->timestamp = time();
+        $item->upVotes = 0;
+        $item->downVotes = 0;
 
         if ($item->create())
         {
@@ -197,12 +247,12 @@ class Post extends root {
         $db = Mysql::getInstance();
 
         if ($db->insert('post', array(
-            'userId' => $this->userId,
-            'postTimestamp' => $this->postTimestamp,
             'text' => $this->text,
-            'locationId' => $this->locationId,
-            'age' => $this->age,
-            'moderated' => $this->moderated,
+            'timestamp' => $this->timestamp,
+            'ageFrom' => $this->ageFrom,
+            'ageTo' => $this->ageTo,
+            'upVotes' => $this->upVotes,
+            'downVotes' => $this->downVotes
         )))
         {
             $this->id = $db->insert_id();
@@ -214,21 +264,45 @@ class Post extends root {
 
     public function update()
     {
-        $db = Mysql::getInstance();
-
-        $db->update('post', array(
-            'userId' => $this->userId,
-            'postTimestamp' => $this->postTimestamp,
-            'text' => $this->text,
-            'locationId' => $this->locationId,
-            'age' => $this->age,
-            'moderated' => $this->moderated,
-        ), '`id` = :id', array('id' => $this->id));
-   }
+    }
 
     public function delete()
     {
-        $db = Mysql::getInstance();
-        $db->delete('post', '`id` = :id', array('id' => $this->id));
+    }
+
+    /**
+     * @return array
+     */
+    public function toJsonArray()
+    {
+        $tagJsonArray = array();
+
+        $tags = $this->getPostTags();
+
+        if (!empty($tags))
+        {
+            foreach($tags as $tag)
+            {
+                if (!empty($tag))
+                {
+                    $tagJsonArray[] = $tag->toJsonArray();
+                }
+            }
+        }
+
+        return array(
+            'id'=>$this->id,
+            'te'=>$this->text,
+            'ti'=>$this->timestamp,
+            'a'=>array('f'=>$this->ageFrom, 't'=>$this->ageTo),
+            'v'=>array('u'=>$this->upVotes, 'd'=>$this->downVotes),
+            'ta'=>$tagJsonArray
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function toSearchBody(){
     }
 }

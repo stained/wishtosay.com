@@ -6,7 +6,16 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="">
         <meta name="author" content="">
-        <link rel="icon" href="/img/favicon.ico">
+
+        <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon" />
+        <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="57x57" href="/img/apple-touch-icon-57x57.png" />
+        <link rel="apple-touch-icon" sizes="72x72" href="/img/apple-touch-icon-72x72.png" />
+        <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon-76x76.png" />
+        <link rel="apple-touch-icon" sizes="114x114" href="/img/apple-touch-icon-114x114.png" />
+        <link rel="apple-touch-icon" sizes="120x120" href="/img/apple-touch-icon-120x120.png" />
+        <link rel="apple-touch-icon" sizes="144x144" href="/img/apple-touch-icon-144x144.png" />
+        <link rel="apple-touch-icon" sizes="152x152" href="/img/apple-touch-icon-152x152.png" />
 
         <title>Wish to Say</title>
 
@@ -23,7 +32,10 @@
         <script src="/js/jquery.masonry.min.js"></script>
         <script src="/js/jquery.nouislider.all.js"></script>
         <script src="/js/angular.nouislider.js"></script>
+        <script src="/js/angular.masonry.js"></script>
+        <script src="/js/sanitize.js"></script>
         <script src="/js/ng-tags-input.js"></script>
+        <script src="/js/moment.min.js"></script>
         <script src="/js/app.js"></script>
     </head>
     <body>
@@ -46,69 +58,155 @@
         </div>
 
         <div class="content">
-            <div class="container">
-                <?php
-                $stories = array(
-                "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc imperdiet ipsum felis, vitae molestie leo blandit sit amet. Sed molestie pellentesque augue sit amet pellentesque. Ut in maximus lectus, eu dictum diam. Nunc nec euismod tellus. Etiam eget malesuada quam. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Etiam sed magna finibus est vestibulum pretium. Morbi pulvinar mauris felis, id vestibulum enim bibendum eu. Sed commodo sapien et est eleifend, sed fringilla dolor finibus. Quisque nisi ipsum, consequat sed lorem eget, accumsan auctor nunc. Mauris ultrices at odio sit amet tincidunt. Duis pulvinar odio purus, sit amet molestie metus tristique et. Maecenas eget orci in erat finibus cursus. Quisque varius ligula ut aliquet finibus. Praesent rhoncus tellus in nunc aliquam, non vehicula dui finibus.<br /><br />Pellentesque diam augue, aliquet vel pulvinar sit amet, posuere ac orci. Aliquam nec neque sit amet dolor mollis condimentum ut vitae orci. Morbi congue eros a lorem lacinia egestas. Pellentesque ut cursus sem, eget ornare elit. Morbi molestie auctor sem. Fusce eget porttitor ligula. Pellentesque cursus nisl eget est bibendum, eget vestibulum nibh ullamcorper. In rhoncus congue purus ut hendrerit. Sed condimentum, dolor ut porta pharetra, libero mi pulvinar mi, nec congue libero turpis vel turpis. Vestibulum dictum urna dolor, vel volutpat lacus lobortis ut. Sed sodales quam eget ligula ornare feugiat a a nisl. Phasellus a congue enim. Donec tristique tempor nisl, et interdum nulla faucibus ac. Curabitur porttitor nisl ut vestibulum egestas. Donec viverra magna lacinia laoreet egestas.",
-                "Ut mollis lectus at ullamcorper iaculis. Etiam in efficitur sem. Suspendisse potenti. Fusce tristique quis mauris ut sollicitudin. Morbi in lorem vitae justo fringilla lacinia. Aenean ac eros elit. Nulla viverra consequat blandit. Fusce condimentum est sodales, molestie massa vulputate, rhoncus ante. Nullam ut tempor lacus, at malesuada ligula.<br /><br />Integer leo enim, aliquet sed magna vitae, suscipit pretium diam. Nunc quis neque quam. Donec porta nunc pretium diam fringilla, quis tempus velit fermentum. Donec scelerisque finibus eleifend. Donec fringilla varius auctor. In porta convallis fermentum. Nam sollicitudin vestibulum interdum. Sed sollicitudin nulla nisi, eu mollis ex viverra iaculis. Aenean at lorem non lectus fringilla lobortis eu sed arcu. Integer pretium quam vitae porta feugiat."
-                );
-                for($i = 0; $i < 30; $i++) {
-                ?>
-                <div class="story<?php echo ($i == 2 ? ' story-featured': ($i % 10 == 0 ? ' story-advert' : '')); ?>">
-                    <div class="story-title">Story <?php echo $i; ?></div>
-                    <div class="story-text">
-                        <?php echo $stories[rand(0, 2)]; ?>
+            <div class="container" masonry='{ "columnWidth" : ".story", "itemSelector" : ".story" }'>
+                <div class="story" masonry-tile ng-repeat="post in posts" ng-model="posts" ng-class="'story-' + post.type">
+                    <div class="story-title">
+                        <span ng-if="post.type == 'advert'">Advert</span>
+                        <span ng-if="post.type != 'advert'">{{ post.title }}</span>
                     </div>
-                    <div class="story-tags">
-                        <div class="tag tag-location">Here, Some Place</div>
-                        <div class="tag tag-gender">Male Horse</div>
-                        <div class="tag">Fishes</div>
-                        <div class="tag">Cows</div>
-                        <div class="tag tag-ethnicity">Blue</div>
+                    <div class="story-text" ng-bind-html="post.te">
+                    </div>
+                    <div class="story-tags" ng-if="post.type != 'advert'">
+                        <button ng-click="addFilter(tag)" class="tag" ng-repeat="tag in post.ta" ng-class="tag.class">
+                            {{ tag.te }}
+                        </button>
                     </div>
                 </div>
-                <?php
-                }
-                ?>
             </div>
             <div class="footer">
-                <div class="footer-content-email">
-                    Personalized stories to your inbox. Sign up below.
-                    <div class="margin-10">
-                        <input type="text" name="email" placeholder="Enter your email address" />
-                        <button>Subscribe Now</button>
-                    </div>
+                <a href="javascript: null" id="footer-what-link">What is this?</a> |
+                <a href="javascript: null" id="footer-privacy-link">Privacy Policy</a> |
+                <a href="javascript: null" id="footer-terms-link">Terms of Use</a> |
+                <a href="javascript: null" id="footer-contact-link">Contact</a>
+
+                <div style="display: none" id="footer-what">
+                    <a name="footer-what-section"></a>
+                    <h2>What is this?</h2>
+                    wishtosay.com is partially a completely unscientific experiment, and idealistically an equally-unscientific tool &mdash; or at least it could be, but that is up to you. Use (or don't use) the filter options at the top
+                    of the screen to find posts of interest, and then [completely anonymously] post your own thoughts or responses if you feel like it. The entire point of this all is to provide
+                    a completely open and mostly uncensored space (within legal requirements) where users can say what they want, to anyone they want, anywhere in the world (off-world not yet directly supported,
+                    but don't let that stop you from creating new tags identifying alien species and worlds).
+                    This means that this site could become an incredible tool for imparting directed snippets of knowledge (anonymously), but it could also become a complete wasteland of typical internet comments and hate. We are hoping for the former, but the latter
+                    is entirely plausible as well &mdash; which is where the experimentation bit comes in. We will run this experiment as long as we can (within budget), but if there is some merit to
+                    the kind of content that gets posted then we will certainly attempt to prolong it further if possible.
                 </div>
-                <p>
-                    <a href="/site/terms">Terms &amp; Conditions</a> |
-                    <a href="/site/privacy">Privacy Policy</a> |
-                    <a href="/site/faq">FAQ</a> |
-                    <a href="/site/feed">Feed</a> |
-                    <a href="/site/contact">Contact</a>
-                    <br />
-                    <span class="copy">Copyright &copy; 2015. All rights reserved.</span>
-                </p>
+
+                <div style="display: none" id="footer-privacy">
+                    <h2>Privacy Policy</h2><a name="footer-privacy-section"></a>
+                    No intentional uniquely identifying information is stored anywhere on this service (no post identifiers, no access logs, nothing!). This does imply
+                    that there are some limitations in providing this service, as well as the (very likely) possibility of "doxing" (posting of personal information without
+                    the express permission of the owner of said information) to occur; since posting personal information goes against the idea of anonimity on this service (and it's a real shitty thing to do) we will be forced to permanently remove such posts on request.
+                    This also means that we can't provide any edit/delete post capabilities, or anything that requires some level of unique user identification. Our wish is to
+                    provide a platform where anyone can say anything without the possibility of a direct attempt at retribution.
+                </div>
+
+                <div style="display: none" id="footer-terms">
+                    <h2>Terms of Use</h2><a name="footer-terms-section"></a>
+                    There are none (at this point). Use this platform in a way that makes sense to you, and if it turns out that
+                    a majority-use pattern emerges (and we are able to continue paying for the service), then we will (maybe) try to optimize
+                    toward that pattern. That said (there is always a but), we cannot (at this time) afford to fight battles based on what someone has written, so if we do receive DMCA (or similarly-official looking, smelling, or tasting) requests
+                    then we will be forced to remove the posts in question.
+                    <br /><br />
+                    In an attempt to provide some level of user-moderated decency for this experiment we allows users (like yourself) to report a post. When a post has a certain number of reports it will
+                    automatically be demoted in the feed (to practical invisibility). This can, of course, be abused (given our lack of personal identification anywhere), but that is to be expected. If you post
+                    something and see that it has been removed (and it really means something to you or someone else) then feel free to re-post it (with the understanding that it could again be automatically demoted).
+                    At the same time if you don't agree with something someone said then either ignore, or report it (which will make the post vanish from your own feed for the duration of the session), best
+                    use your own intuition and common sense in this regard.
+                </div>
+
+                <div style="display: none" id="footer-contact">
+                    <h2>Contact</h2><a name="footer-contact-section"></a>
+                    All queries, requests, and/or hate mail can be sent to <a href="mailto:i.really@wishtosay.com">i.really@wishtosay.com</a>
+                </div>
             </div>
         </div>
 
         <div class="footer-post">
-            <div class="footer-post-logo"></div>
-            <button>I wish to say</button>
+            <textarea rows="1" id="post" placeholder="I wish to say..." ng-model="post"></textarea>
+            <button ng-click="doPost()"><img src="/img/logosmall.png" /></button>
         </div>
-
-        <script>
-            $(function(){
-
-                var $container = $('.container');
-
-                $container.masonry({
-                    columnWidth: '.story',
-                    itemSelector : '.story'
-                });
-
-            });
-        </script>
 
     </body>
 </html>
+
+<script type="text/javascript">
+    $("#footer-what-link").click(function(){
+        $("#footer-terms").hide();
+        $("#footer-privacy").hide();
+        $("#footer-what").show();
+        $("#footer-contact").hide();
+        scrollToAnchor('footer-what-section');
+    });
+
+    $("#footer-privacy-link").click(function(){
+        $("#footer-terms").hide();
+        $("#footer-privacy").show();
+        $("#footer-what").hide();
+        $("#footer-contact").hide();
+        scrollToAnchor('footer-privacy-section');
+    });
+
+    $("#footer-terms-link").click(function(){
+        $("#footer-terms").show();
+        $("#footer-privacy").hide();
+        $("#footer-what").hide();
+        $("#footer-contact").hide();
+        scrollToAnchor('footer-terms-section');
+    });
+
+    $("#footer-contact-link").click(function(){
+        $("#footer-terms").hide();
+        $("#footer-privacy").hide();
+        $("#footer-what").hide();
+        $("#footer-contact").show();
+        scrollToAnchor('footer-contact-section');
+    });
+
+    $("#post").keyup(function (e) {
+        adaptiveheight(this);
+    });
+
+    $("#post").change(function () {
+        adaptiveheight(this);
+    });
+
+    i=0;
+    j=0;
+
+    function scrollToAnchor(aid){
+        var aTag = $("a[name='"+ aid +"']");
+        $('html,body').animate({scrollTop: aTag.offset().top},'slow');
+    }
+
+    function adaptiveheight(a) {
+
+        var maxHeight = $(window).height() / 3;
+
+        $(a).height(0);
+        var scrollval = $(a)[0].scrollHeight;
+
+        if(scrollval > maxHeight)
+        {
+            $(a).height(maxHeight);
+            $(".footer").css('padding-bottom', maxHeight + 30);
+            return
+        }
+
+        $(a).height(scrollval);
+        $(".footer").css('padding-bottom', scrollval + 30);
+
+        if (parseInt(a.style.height) > $(window).height()) {
+            if(j==0){
+                max=a.selectionEnd;
+            }
+            j++;
+            var i =a.selectionEnd;
+            console.log(i);
+            if(i >=max){
+                $(document).scrollTop(parseInt(a.style.height));
+            }else{
+                $(document).scrollTop(0);
+            }
+        }
+    }
+</script>

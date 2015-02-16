@@ -1,13 +1,21 @@
 <?php namespace Model;
 
 use \System\Mysql;
+use \Util\String;
 
-class Country extends root {
+class Country extends Continent {
+
+    const SEARCH_WEIGHT = 4;
 
     /**
      * @var int
      */
     protected $id;
+
+    /**
+     * @var int
+     */
+    protected $continentId;
 
     /**
      * @var string
@@ -25,6 +33,27 @@ class Country extends root {
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return Continent|null
+     */
+    public function getContinent()
+    {
+        return Continent::getById($this->continentId);
+    }
+
+    /**
+     * @param Continent $continent
+     * @return $this
+     */
+    public function setContinent($continent)
+    {
+        if(!empty($continent)) {
+            $this->continentId = $continent->getId();
+        }
+
+        return $this;
     }
 
     /**
@@ -58,7 +87,26 @@ class Country extends root {
         $item->id = $data['id'];
         $item->country = $data['country'];
         $item->code = $data['code'];
+        $item->continentId = $data['continentId'];
         return $item;
+    }
+
+    /**
+     * @return Country[]
+     */
+    public static function getAll()
+    {
+        $db = Mysql::getInstance();
+        $data = $db->select('country');
+
+        $rows = array();
+
+        while ($row = $data->fetch_one())
+        {
+            $rows[] = static::init($row);
+        }
+
+        return $rows;
     }
 
     /**
@@ -88,13 +136,15 @@ class Country extends root {
     }
 
     /**
+     * @param Continent $continent
      * @param string $country
      * @param string $code
      * @return bool|Country
      */
-    public static function createCountry($country, $code)
+    public static function createCountry($continent, $country, $code)
     {
         $item = new self;
+        $item->setContinent($continent);
         $item->country = $country;
         $item->code = $code;
 
@@ -111,6 +161,7 @@ class Country extends root {
         $db = Mysql::getInstance();
 
         if ($db->insert('country', array(
+            'continentId' => $this->continentId,
             'country' => $this->country,
             'code'  => $this->code
         )))
@@ -128,5 +179,29 @@ class Country extends root {
 
     public function delete()
     {
+    }
+
+    /**
+     * @return array
+     */
+    public function toJsonArray()
+    {
+        return array(
+            'i'=>$this->id,
+            'ty'=>'country',
+            'te'=>$this->getCountry()
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function toSearchBody(){
+        return array(
+            'search' => String::replaceForSearch($this->getCountry()),
+            'search_weight' => static::SEARCH_WEIGHT,
+            'tag' => $this->getCountry(),
+            'code' => $this->getCode()
+        );
     }
 }

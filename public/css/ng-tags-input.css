@@ -21,12 +21,15 @@ tags-input .tags {
   overflow: hidden;
   word-wrap: break-word;
   cursor: text;
-  background-color: white;
-  box-shadow: inset 2px 2px 2px #ccc;
-  border: 0px solid;
+  width: 100%;
+  border: none;
+  box-shadow: inset 1px 1px 1px #202020;
+  background: #3d3d3d;
+  color: white;
   padding: 0.4%;
   height: 100%;
 }
+
 tags-input .tags.focused {
   outline: none;
   box-shadow: inset 2px 2px 2px #ccc;
@@ -46,6 +49,32 @@ tags-input .tags .tag-item {
   display: inline-block;
   font-size: small;
 }
+
+.tag {
+  border-radius: 5px;
+  display: inline-block;
+  padding: 6px;
+  margin-top: 5px;
+  background: #4978e2;
+  font-size: small;
+  color: white;
+}
+
+.tag-location {
+  background: #92c849;
+  color: white;
+}
+
+.tag-gender {
+  background: #873ac9;
+  color: white;
+}
+
+.tag-ethnicity {
+  background: #f6d647;
+  color: white;
+}
+
 
 tags-input .tags .tag-item.selected {
   background: red;

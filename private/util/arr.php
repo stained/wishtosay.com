@@ -7,20 +7,21 @@ class Arr
      * 
      * @param array $array
      * @param mixed $fields pass in array for multi-dimensional fields
-     * @return type 
+     * @param mixed $default
+     * @return mixed
      */
-    public static function get($array, $fields)
+    public static function get($array, $fields, $default = null)
     {
         if(empty($array) || empty($fields))
         {
-            return;
+            return $default;
         }
         
         if(!is_array($fields))
         {
             if(!array_key_exists($fields, $array))
             {
-                return;
+                return $default;
             }
             
             return $array[$fields];
@@ -31,7 +32,7 @@ class Arr
         {
             if(!is_array($array) || !array_key_exists($dimension, $array))
             {
-                return;
+                return $default;
             }
             
             $array = $array[$dimension];

@@ -234,6 +234,7 @@ tagsInput.directive('tagsInput', ["$timeout","$document","tagsInputConfig", func
                 maxTags: [Number, MAX_SAFE_INTEGER],
                 displayProperty: [String, 'text'],
                 displayClassProperty: [String, 'class'],
+                displayStyleProperty: [String, 'style'],
                 allowLeftoverText: [Boolean, false],
                 addFromAutocompleteOnly: [Boolean, false]
             });
@@ -261,6 +262,9 @@ tagsInput.directive('tagsInput', ["$timeout","$document","tagsInputConfig", func
                     },
                     getCurrentTagClass: function() {
                         return $scope.newTag.class;
+                    },
+                    getCurrentTagStyle: function() {
+                        return $scope.newTag.style;
                     },
                     getOptions: function() {
                         return $scope.options;
@@ -321,7 +325,7 @@ tagsInput.directive('tagsInput', ["$timeout","$document","tagsInputConfig", func
                     }
                 });
 
-            scope.newTag = { text: '', class: '', invalid: null };
+            scope.newTag = { text: '', class: '', style: '', invalid: null };
 
             scope.getDisplayText = function(tag) {
                 return safeToString(tag[options.displayProperty]);
@@ -330,6 +334,11 @@ tagsInput.directive('tagsInput', ["$timeout","$document","tagsInputConfig", func
             scope.getDisplayClass = function(tag) {
                 var tagClass = safeToString(tag[options.displayClassProperty]);
                 return tagList.selected == tag ? 'selected' : (tagClass == '' ? 'tag' : tagClass);
+            };
+
+            scope.getDisplayStyle = function(tag) {
+                var tagStyle = tag[options.displayStyleProperty];
+                return tagList.selected == tag ? '' : tagStyle;
             };
 
             scope.track = function(tag) {
@@ -526,7 +535,7 @@ tagsInput.directive('autoComplete', ["$document","$timeout","$sce","tagsInputCon
         templateUrl: 'ngTagsInput/auto-complete.html',
         link: function(scope, element, attrs, tagsInputCtrl) {
             var hotkeys = [KEYS.enter, KEYS.tab, KEYS.escape, KEYS.up, KEYS.down],
-                suggestionList, tagsInput, options, getItem, getItemClass, getDisplayText, getDisplayClass, shouldLoadSuggestions;
+                suggestionList, tagsInput, options, getItem, getItemClass, getItemStyle, getDisplayText, getDisplayClass, shouldLoadSuggestions;
 
             tagsInputConfig.load('autoComplete', scope, attrs, {
                 debounceDelay: [Number, 100],
@@ -551,6 +560,10 @@ tagsInput.directive('autoComplete', ["$document","$timeout","$sce","tagsInputCon
 
             getItemClass = function(item) {
                 return item[options.tagsInput.displayClassProperty];
+            };
+
+            getItemStyle = function(item) {
+                return item[options.tagsInput.displayStyleProperty];
             };
 
             getDisplayText = function(item) {
@@ -874,7 +887,7 @@ tagsInput.provider('tagsInputConfig', function() {
 /* HTML templates */
 tagsInput.run(["$templateCache", function($templateCache) {
     $templateCache.put('ngTagsInput/tags-input.html',
-    "<div class=\"host\" tabindex=\"-1\" ti-transclude-append=\"\"><div class=\"tags\" ng-class=\"{focused: hasFocus}\"><ul class=\"tag-list\"><li class=\"tag-item\" ng-repeat=\"tag in tagList.items track by track(tag)\" ng-class=\"getDisplayClass(tag)\"><span ng-bind=\"getDisplayText(tag)\"></span> <a class=\"remove-button\" ng-click=\"tagList.remove($index)\" ng-bind=\"options.removeTagSymbol\"></a></li></ul><input class=\"input\" ng-model=\"newTag.text\" ng-change=\"newTagChange()\" ng-trim=\"false\" ng-class=\"{'invalid-tag': newTag.invalid}\" ti-bind-attrs=\"{type: options.type, placeholder: options.placeholder, tabindex: options.tabindex}\" ti-autosize=\"\"></div></div>"
+    "<div class=\"host\" tabindex=\"-1\" ti-transclude-append=\"\"><div class=\"tags\" ng-class=\"{focused: hasFocus}\"><ul class=\"tag-list\"><li class=\"tag-item\" ng-repeat=\"tag in tagList.items track by track(tag)\" ng-class=\"getDisplayClass(tag)\" ng-style=\"getDisplayStyle(tag)\"><span ng-bind=\"getDisplayText(tag)\"></span> <a class=\"remove-button\" ng-click=\"tagList.remove($index)\" ng-bind=\"options.removeTagSymbol\"></a></li></ul><input class=\"input\" ng-model=\"newTag.text\" ng-change=\"newTagChange()\" ng-trim=\"false\" ng-class=\"{'invalid-tag': newTag.invalid}\" ti-bind-attrs=\"{type: options.type, placeholder: options.placeholder, tabindex: options.tabindex}\" ti-autosize=\"\"></div></div>"
   );
 
   $templateCache.put('ngTagsInput/auto-complete.html',

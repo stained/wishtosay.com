@@ -2,6 +2,23 @@
 
 class String
 {
+
+    public static function clean($value)
+    {
+        return strip_tags($value);
+    }
+
+    /**
+     * @param string $value
+     * @return string
+     */
+    public static function replaceForSearch($value)
+    {
+        $value = str_replace('&', 'and', $value);
+        $value = str_replace(' ', ',', $value);
+        return $value;
+    }
+
     /**
      * Split a string randomly
      * 

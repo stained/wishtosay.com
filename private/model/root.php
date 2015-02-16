@@ -18,4 +18,20 @@ abstract class Root {
      * Delete object
      */
     public abstract function delete();
+
+    /**
+     * Elastic search body
+     * @return array
+     */
+    public abstract function toSearchBody();
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        $reflect = new \ReflectionClass($this);
+        return strtolower($reflect->getShortName());
+    }
+
 }

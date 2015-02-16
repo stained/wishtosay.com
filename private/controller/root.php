@@ -15,7 +15,7 @@ class Root
         return $view;
     }
 
-    protected static function toJson($array, $code)
+    protected static function toJson($array, $code = 200)
     {
         $view = View::load('json', null, $code);
         $view->setContentType('application/json');

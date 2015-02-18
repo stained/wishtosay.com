@@ -39,7 +39,7 @@
         <script src="/js/app.js"></script>
     </head>
     <body>
-        <div class="filter">
+        <div class="filter" id="filter">
             <tags-input class="filter-tags" ng-model="searchFilterTags" on-tag-added="controller.addedAttendee($tag)"
                         placeholder="Enter locations, genders, or tags to filter on." replace-spaces-with-dashes="false">
                 <auto-complete source="loadTags($query)"></auto-complete>
@@ -51,6 +51,9 @@
                     <div class="age-filter-elderly-icon">
                     </div>
                 </div>
+            </div>
+            <div class="filter-toggle" id="filter-toggle" ng-click="toggleFilter()">
+                &#9650;
             </div>
         </div>
 
@@ -73,56 +76,64 @@
                     </div>
                 </div>
             </div>
+
+            <ul class="footer-tabs">
+                <li id="footer-tab-faq">F.A.Q</li>
+                <li id="footer-tab-privacy">Privacy</li>
+                <li id="footer-tab-terms">Terms</li>
+                <li id="footer-tab-contact">Contact</li>
+                <li id="footer-tab-feed">Feed</li>
+            </ul>
+
             <div class="footer">
-                <a href="javascript: null" id="footer-what-link">What is this?</a> |
-                <a href="javascript: null" id="footer-privacy-link">Privacy Policy</a> |
-                <a href="javascript: null" id="footer-terms-link">Terms of Use</a> |
-                <a href="javascript: null" id="footer-contact-link">Contact</a>
-
-                <div style="display: none" id="footer-what">
-                    <a name="footer-what-section"></a>
-                    <h2>What is this?</h2>
-                    wishtosay.com is partially a completely unscientific experiment, and idealistically an equally-unscientific tool &mdash; or at least it could be, but that is up to you. Use (or don't use) the filter options at the top
-                    of the screen to find posts of interest, and then [completely anonymously] post your own thoughts or responses if you feel like it. The entire point of this all is to provide
-                    a completely open and mostly uncensored space (within legal requirements) where users can say what they want, to anyone they want, anywhere in the world (off-world not yet directly supported,
-                    but don't let that stop you from creating new tags identifying alien species and worlds).
-                    This means that this site could become an incredible tool for imparting directed snippets of knowledge (anonymously), but it could also become a complete wasteland of typical internet comments and hate. We are hoping for the former, but the latter
-                    is entirely plausible as well &mdash; which is where the experimentation bit comes in. We will run this experiment as long as we can (within budget), but if there is some merit to
-                    the kind of content that gets posted then we will certainly attempt to prolong it further if possible.
+                <div style="display: block" id="footer-copy">
+                    &copy; 2015
                 </div>
-
-                <div style="display: none" id="footer-privacy">
-                    <h2>Privacy Policy</h2><a name="footer-privacy-section"></a>
-                    No intentional uniquely identifying information is stored anywhere on this service (no post identifiers, no access logs, nothing!). This does imply
-                    that there are some limitations in providing this service, as well as the (very likely) possibility of "doxing" (posting of personal information without
-                    the express permission of the owner of said information) to occur; since posting personal information goes against the idea of anonimity on this service (and it's a real shitty thing to do) we will be forced to permanently remove such posts on request.
-                    This also means that we can't provide any edit/delete post capabilities, or anything that requires some level of unique user identification. Our wish is to
-                    provide a platform where anyone can say anything without the possibility of a direct attempt at retribution.
+                <div style="display: none" id="footer-tab-faq-content">
+                    <a name="footer-tab-faq-section"></a>
+                    <h2>Frequently Asked Questions</h2>
+                    <h3>
+                        So, what is this exactly?
+                    </h3>
+                    <p>
+                        wishtosay.com is partially a completely unscientific experiment, and idealistically an equally-unscientific tool &mdash; or at least it could be, but that is up to you. Use (or don't use) the filter options at the top
+                        of the screen to find posts of interest, and then [completely anonymously] post your own thoughts or responses if you feel like it. The entire point of this all is to provide
+                        a completely open and mostly uncensored space (within legal requirements) where users can say what they want, to anyone they want, anywhere in the world (off-world not yet directly supported,
+                        but don't let that stop you from creating new tags identifying alien species and worlds).
+                        This means that this site could become an incredible tool for imparting directed snippets of knowledge (anonymously), but it could also become a complete wasteland of typical internet comments and hate. We are hoping for the former, but the latter
+                        is entirely plausible as well &mdash; which is where the experimentation bit comes in. We will run this experiment as long as we can (within budget), but if there is some merit to
+                        the kind of content that gets posted then we will certainly attempt to prolong it further if possible.
+                    </p>
                 </div>
-
-                <div style="display: none" id="footer-terms">
-                    <h2>Terms of Use</h2><a name="footer-terms-section"></a>
-                    There are none (at this point). Use this platform in a way that makes sense to you, and if it turns out that
-                    a majority-use pattern emerges (and we are able to continue paying for the service), then we will (maybe) try to optimize
-                    toward that pattern. That said (there is always a but), we cannot (at this time) afford to fight battles based on what someone has written, so if we do receive DMCA (or similarly-official looking, smelling, or tasting) requests
-                    then we will be forced to remove the posts in question.
-                    <br /><br />
-                    In an attempt to provide some level of user-moderated decency for this experiment we allows users (like yourself) to report a post. When a post has a certain number of reports it will
-                    automatically be demoted in the feed (to practical invisibility). This can, of course, be abused (given our lack of personal identification anywhere), but that is to be expected. If you post
-                    something and see that it has been removed (and it really means something to you or someone else) then feel free to re-post it (with the understanding that it could again be automatically demoted).
-                    At the same time if you don't agree with something someone said then either ignore, or report it (which will make the post vanish from your own feed for the duration of the session), best
-                    use your own intuition and common sense in this regard.
+                <div style="display: none" id="footer-tab-privacy-content">
+                    <a name="footer-tab-privacy-section"></a>
+                    <h2>Privacy Policy</h2>
+                    <p>
+                    </p>
                 </div>
-
-                <div style="display: none" id="footer-contact">
-                    <h2>Contact</h2><a name="footer-contact-section"></a>
-                    All queries, requests, and/or hate mail can be sent to <a href="mailto:i.really@wishtosay.com">i.really@wishtosay.com</a>
+                <div style="display: none" id="footer-tab-terms-content">
+                    <a name="footer-tab-terms-section"></a>
+                    <h2>Terms of Use</h2>
+                    <p>
+                    </p>
                 </div>
-            </div>
+                <div style="display: none" id="footer-tab-contact-content">
+                    <a name="footer-tab-contact-section"></a>
+                    <h2>Contact</h2>
+                    <p>
+
+                    </p>
+                </div>
+                <div style="display: none" id="footer-tab-feed-content">
+                    <a name="footer-tab-feed-section"></a>
+                    <h2>Feed</h2>
+                    <p>
+                    </p>
+                </div>
         </div>
 
         <div class="footer-post">
-            <textarea rows="1" id="post" placeholder="I wish to say..." ng-model="post"></textarea>
+            <textarea rows="1" id="post" placeholder="I wish to say..." ng-model="post" ng-keyup="adaptPostFooter()" ng-change="adaptPostFooter()"></textarea>
             <button ng-click="doPost()"><img src="/img/logosmall.png" /></button>
         </div>
 
@@ -130,83 +141,33 @@
 </html>
 
 <script type="text/javascript">
-    $("#footer-what-link").click(function(){
-        $("#footer-terms").hide();
-        $("#footer-privacy").hide();
-        $("#footer-what").show();
-        $("#footer-contact").hide();
-        scrollToAnchor('footer-what-section');
-    });
 
-    $("#footer-privacy-link").click(function(){
-        $("#footer-terms").hide();
-        $("#footer-privacy").show();
-        $("#footer-what").hide();
-        $("#footer-contact").hide();
-        scrollToAnchor('footer-privacy-section');
-    });
+    $(document).ready(function()
+    {
+        $('ul.footer-tabs li').click(function(e)
+        {
+            var id = $(this)[0].id;
 
-    $("#footer-terms-link").click(function(){
-        $("#footer-terms").show();
-        $("#footer-privacy").hide();
-        $("#footer-what").hide();
-        $("#footer-contact").hide();
-        scrollToAnchor('footer-terms-section');
-    });
+            if($(this).hasClass('selected'))
+            {
+                $(this).removeClass('selected');
+                $('#' + id + '-content').hide(400);
+                $('#footer-copy').show(400);
+            }
+            else
+            {
+                $('ul.footer-tabs li').removeClass('selected');
+                $(this).addClass('selected');
 
-    $("#footer-contact-link").click(function(){
-        $("#footer-terms").hide();
-        $("#footer-privacy").hide();
-        $("#footer-what").hide();
-        $("#footer-contact").show();
-        scrollToAnchor('footer-contact-section');
+                $('.footer div').hide(400);
+                $('#' + id + '-content').show(400);
+                scrollToAnchor(id + '-section');
+            }
+        });
     });
-
-    $("#post").keyup(function (e) {
-        adaptiveheight(this);
-    });
-
-    $("#post").change(function () {
-        adaptiveheight(this);
-    });
-
-    i=0;
-    j=0;
 
     function scrollToAnchor(aid){
         var aTag = $("a[name='"+ aid +"']");
         $('html,body').animate({scrollTop: aTag.offset().top},'slow');
-    }
-
-    function adaptiveheight(a) {
-
-        var maxHeight = $(window).height() / 3;
-
-        $(a).height(0);
-        var scrollval = $(a)[0].scrollHeight;
-
-        if(scrollval > maxHeight)
-        {
-            $(a).height(maxHeight);
-            $(".footer").css('padding-bottom', maxHeight + 30);
-            return
-        }
-
-        $(a).height(scrollval);
-        $(".footer").css('padding-bottom', scrollval + 30);
-
-        if (parseInt(a.style.height) > $(window).height()) {
-            if(j==0){
-                max=a.selectionEnd;
-            }
-            j++;
-            var i =a.selectionEnd;
-            console.log(i);
-            if(i >=max){
-                $(document).scrollTop(parseInt(a.style.height));
-            }else{
-                $(document).scrollTop(0);
-            }
-        }
     }
 </script>

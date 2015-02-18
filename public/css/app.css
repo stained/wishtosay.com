@@ -42,6 +42,7 @@ input[type=text] {
     background: #343338;
     min-height: 52px;
     border-bottom: 1px solid #606060;
+    box-shadow: inset 1px -1px 1px #202020, 0px 4px 10px #222;
 }
 
 .age-filter-elderly-icon {
@@ -64,23 +65,6 @@ input[type=text] {
     margin-top: 19px;
 }
 
-.copy {
-    font-size: small;
-    font-style: italic;
-}
-
-.footer {
-    background: #343338;
-    border-top: 2px solid #232227;
-    font-size: medium;
-    padding: 10px;
-    text-align: center;
-    color: white;
-    clear: both;
-    padding-bottom: 50px;
-    line-height: 25px;
-}
-
 .footer div {
     text-align: justify;
 }
@@ -101,7 +85,7 @@ input[type=text] {
     font-size: medium;
     border: none;
     border-top: 1px solid #606060;
-    box-shadow: inset 1px 1px 1px #202020;
+    box-shadow: inset 1px 1px 1px #202020, 0px -4px 10px #222;
     background: #3d3d3d;
     color: white;
 }
@@ -167,7 +151,7 @@ input[type=text] {
     }
 
     .header {
-        height: 95px;
+        height: 92px;
         background: url("/img/header/small.png") no-repeat #343338;
         background-position: center top;
     }
@@ -179,7 +163,7 @@ input[type=text] {
     }
 
     .header {
-        height: 145px;
+        height: 144px;
         background: url("/img/header/med.png") no-repeat #343338;
         background-position: center top;
     }
@@ -195,9 +179,9 @@ input[type=text] {
     }
 
     .header {
-        height: 280px;
+        height: 184px;
         background: url("/img/header/med-large.png") no-repeat #343338;
-        background-position: center top 90px;
+        background-position: center top 0px;
     }
 }
 
@@ -211,9 +195,9 @@ input[type=text] {
     }
 
    .header {
-        height: 355px;
+        height: 259px;
         background: url("/img/header/large.png") no-repeat #343338;
-        background-position: center top 90px;
+        background-position: center top 0px;
     }
 }
 
@@ -240,7 +224,7 @@ input[type=text] {
 .story-text {
     padding: 10px;
     font-size: medium;
-    color: #798692;
+    color: #999;
 }
 
 
@@ -249,7 +233,7 @@ input[type=text] {
     font-weight: bold;
     font-size: small;
     padding: 10px;
-    color: #798692;
+    color: #999;
     float: right;
 }
 
@@ -281,4 +265,119 @@ input[type=text] {
 
 button.tag {
     border: 0px;
+}
+
+.filter-toggle {
+    position:absolute;
+    color: #f55e3b;
+    border: 1px solid #606060;
+    border-top: 3px solid #343338;
+    box-shadow: inset 1px -1px 1px #202020, 0px 4px 10px #222;
+    border-radius: 0 0 10px 10px;
+    width: 50px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+    background: #343338;
+    left:0;
+    right:0;
+    margin: auto;
+    margin-top: -2px;
+}
+
+.filter-toggle:hover {
+    color: #aa2000;
+}
+
+
+.footer {
+    background: #343338;
+    font-size: medium;
+    padding: 10px;
+    text-align: center;
+    color: #999;
+    clear: both;
+    padding-bottom: 50px;
+    line-height: 25px;
+    border-top: 1px solid #606060;
+    box-shadow: inset 1px 1px 1px #202020;
+    min-height: 40px;
+    padding-bottom: 50px;
+}
+
+.footer div {
+    max-width: 900px;
+    margin: auto;
+}
+
+.footer div h2 {
+    font-size: x-large;
+    text-align: center;
+    color: rgba(0,0,0, 0.8);
+    text-shadow: 1px 1px 1px #343338, 0 0 0 #000, 1px 1px 1px #606060;
+}
+
+.footer div h3 {
+    font-size: large;
+    text-align: left;
+    border-bottom: 1px solid #999;
+    box-shadow: 0 1px 0px #202020;
+}
+
+/* Don't show shadows when selecting text */
+::-moz-selection { background: #5af; color: #fff; text-shadow: none; }
+::selection { background: #5af; color: #fff; text-shadow: none; }
+
+ul.footer-tabs {
+    margin-bottom: 2px;
+    margin-top: 20px;
+    padding: 0;
+    list-style-type: none;
+    text-align: center;
+}
+
+ul.footer-tabs li {
+    margin-left: -2px;
+    display: inline-block;
+    color: #f55e3b;
+    border: 1px solid #606060;
+    border-bottom: 1px solid #343338;
+    box-shadow: inset 1px 1px 1px #202020, 0px -4px 10px #222;
+    border-radius: 10px 10px 0 0;
+    padding: 8px;
+    height: 10px;
+    text-align: center;
+    background: #343338;
+    vertical-align: bottom;
+}
+
+ul.footer-tabs li.selected {
+    margin-left: -2px;
+    display: inline;
+    color: #999;
+    border: 1px solid #606060;
+    border-bottom: 3px solid #343338;
+    box-shadow: inset 1px 1px 1px #202020, 0px -4px 10px #222;
+    border-radius: 10px 10px 0 0;
+    padding: 8px;
+    text-align: center;
+    line-height: 30px;
+    background: #343338;
+}
+
+ul.footer-tabs li.selected:hover {
+    color: #999;
+}
+
+ul.footer-tabs li:hover {
+    color: #aa2000;
+}
+
+#footer-copy {
+    text-align: center;
+    font-size: small;
+}
+
+p.center {
+    text-align: center;
 }

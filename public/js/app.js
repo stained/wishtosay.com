@@ -202,35 +202,15 @@
 
             PostClient.create(data,
                 function success(result) {
-                    console.log(result[0]);
                     $scope.posts.unshift($scope.loadPost(result[0]));
+                    $scope.post = "";
+                    $("#post").val("");
+                    $scope.adaptPostFooter();
                 },
                 function error(result) {
                     console.log(result);
                 }
             );
-
-            $scope.post = "";
-        }
-
-        $scope.addFilter = function(tag) {
-            var found = false;
-
-            $.each($scope.searchFilterTags, function(index, searchTag) {
-                if(tag.ty == searchTag.type && tag.i == searchTag.id)
-                {
-                    found = true;
-                }
-            });
-
-            if (!found)
-            {
-                var newTag = $scope.createValidTag(tag)
-
-                if (newTag !== false) {
-                    $scope.searchFilterTags.push(newTag);
-                }
-            }
         }
 
         $scope.loadPosts = function() {
@@ -291,6 +271,28 @@
             }
 
             return post;
+        }
+
+        $scope.filterToggled = false;
+
+        $scope.addFilter = function(tag) {
+            var found = false;
+
+            $.each($scope.searchFilterTags, function(index, searchTag) {
+                if(tag.ty == searchTag.type && tag.i == searchTag.id)
+                {
+                    found = true;
+                }
+            });
+
+            if (!found)
+            {
+                var newTag = $scope.createValidTag(tag)
+
+                if (newTag !== false) {
+                    $scope.searchFilterTags.push(newTag);
+                }
+            }
         }
 
         $scope.updateUrlHash = function() {
@@ -428,12 +430,70 @@
             return deferred.promise;
         };
 
+        $scope.toggleFilter = function() {
+            var filter = $("#filter");
+            var top = 0;
+
+            if(!$scope.filterToggled)
+            {
+                top = -filter.height() + 5;
+            }
+
+            var headerMargin = filter.height() + top + 35;
+
+            filter.animate({top: top + "px"}, 400, function() {
+                $scope.filterToggled = !$scope.filterToggled;
+
+                if($scope.filterToggled)
+                {
+                    $("#filter-toggle").html('&#9660;');
+                }
+                else
+                {
+                    $("#filter-toggle").html('&#9650;');
+                }
+            });
+
+            $(".header").animate({margin: headerMargin + "px 0 0 0"}, 400, function() {});
+        }
+
+        $scope.adaptPostFooter = function() {
+            var postInput = $("#post");
+            var footer = $(".footer");
+
+            var maxHeight = $(window).height() / 3;
+
+            postInput.height(0);
+            var scrollVal = postInput[0].scrollHeight - 16;
+
+            if(scrollVal > maxHeight)
+            {
+                postInput.height(maxHeight);
+                footer.css('padding-bottom', maxHeight + 30);
+                return
+            }
+
+            postInput.height(scrollVal);
+            footer.css('padding-bottom', scrollVal + 30);
+        }
+
         $scope.parseWindowSize = function() {
             // change height of header image as necessary
-            var filter = $(".filter");
+            var filter = $("#filter");
+
+            if($scope.filterToggled)
+            {
+                // ensure that filter is completely out of screen, but not too far out
+                filter.css('top', -filter.height() + 5 + "px");
+            }
+            else
+            {
+                filter.css('top', 0);
+            }
+
             var header = $(".header");
-            console.log(filter.height());
-            header.css('margin-top', filter.height());
+            var margin = filter.height() + filter.position().top + 35;
+            header.css('margin-top', margin + 'px');
         }
 
         window.onload = function() {

@@ -7,15 +7,26 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon" />
-        <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
-        <link rel="apple-touch-icon" sizes="57x57" href="/img/apple-touch-icon-57x57.png" />
-        <link rel="apple-touch-icon" sizes="72x72" href="/img/apple-touch-icon-72x72.png" />
-        <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon-76x76.png" />
-        <link rel="apple-touch-icon" sizes="114x114" href="/img/apple-touch-icon-114x114.png" />
-        <link rel="apple-touch-icon" sizes="120x120" href="/img/apple-touch-icon-120x120.png" />
-        <link rel="apple-touch-icon" sizes="144x144" href="/img/apple-touch-icon-144x144.png" />
-        <link rel="apple-touch-icon" sizes="152x152" href="/img/apple-touch-icon-152x152.png" />
+        <link rel="apple-touch-icon" sizes="57x57" href="/img/ico/apple-touch-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="60x60" href="/img/ico/apple-touch-icon-60x60.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/img/ico/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="/img/ico/apple-touch-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/img/ico/apple-touch-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="/img/ico/apple-touch-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="/img/ico/apple-touch-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="/img/ico/apple-touch-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/ico/apple-touch-icon-180x180.png">
+        <link rel="icon" type="image/png" href="/img/ico/favicon-32x32.png" sizes="32x32">
+        <link rel="icon" type="image/png" href="/img/ico/favicon-194x194.png" sizes="194x194">
+        <link rel="icon" type="image/png" href="/img/ico/favicon-96x96.png" sizes="96x96">
+        <link rel="icon" type="image/png" href="/img/ico/android-chrome-192x192.png" sizes="192x192">
+        <link rel="icon" type="image/png" href="/img/ico/favicon-16x16.png" sizes="16x16">
+        <link rel="manifest" href="/img/ico/manifest.json">
+        <link rel="shortcut icon" href="/img/ico/favicon.ico">
+        <meta name="msapplication-TileColor" content="#f55e3b">
+        <meta name="msapplication-TileImage" content="/img/ico/mstile-144x144.png">
+        <meta name="msapplication-config" content="/img/ico/browserconfig.xml">
+        <meta name="theme-color" content="#ffffff">
 
         <title>Wish to Say</title>
 
@@ -23,7 +34,8 @@
         <link rel="stylesheet" href="/css/jquery.nouislider.css">
         <link rel="stylesheet" href="/css/jquery.nouislider.pips.css">
         <link rel="stylesheet" href="/css/ng-tags-input.css">
-        <link href='http://fonts.googleapis.com/css?family=Milonga' rel='stylesheet' type='text/css'>
+
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans:700,300,400' rel='stylesheet' type='text/css'>
 
         <script src="/js/jquery-1.11.2.min.js"></script>
         <script src="/js/angular.min.js"></script>
@@ -39,9 +51,20 @@
         <script src="/js/app.js"></script>
     </head>
     <body>
+
+        <div class="loading">
+            <div class="loader"></div>
+            Please stand by for just a moment.
+        </div>
+
+        <div class="error" style="display: none">
+            <div class="error-icon"></div>
+            <div class="error-text"></div>
+        </div>
+
         <div class="filter" id="filter">
             <tags-input class="filter-tags" ng-model="searchFilterTags" on-tag-added="controller.addedAttendee($tag)"
-                        placeholder="Enter locations, genders, or tags to filter on." replace-spaces-with-dashes="false">
+                        placeholder="Filter by..." replace-spaces-with-dashes="false">
                 <auto-complete source="loadTags($query)"></auto-complete>
             </tags-input>
             <div class="age-filter">
@@ -61,20 +84,34 @@
         </div>
 
         <div class="content">
-            <div class="container" masonry='{ "columnWidth" : ".story", "itemSelector" : ".story" }'>
-                <div class="story" masonry-tile ng-repeat="post in posts" ng-model="posts" ng-class="'story-' + post.type">
-                    <div class="story-title">
-                        <span ng-if="post.type == 'advert'">Advert</span>
-                        <span ng-if="post.type != 'advert'">{{ post.title }}</span>
-                    </div>
-                    <div class="story-text" ng-bind-html="post.te">
-                    </div>
-                    <div class="story-tags" ng-if="post.type != 'advert'">
-                        <button ng-click="addFilter(tag)" class="tag" ng-repeat="tag in post.ta" ng-class="tag.class">
-                            {{ tag.te }}
-                        </button>
+
+            <div class="story-none" ng-show="!posts.length">
+                <h2>Nothing here yet</h2>
+                Try changing the age and tag filters above, or post something of your own. You can also tap the button below for a random selection (at own risk).<br />
+                <button class="load-random" ng-click="loadRandom()">I wish to see something random!</button>
+            </div>
+
+            <div class="outer-container">
+                <div class="container" masonry='{ "columnWidth" : ".story", "itemSelector" : ".story" }'>
+                    <div class="story" masonry-tile ng-repeat="post in posts" ng-model="posts" ng-class="'story-' + post.type">
+                        <div class="story-title">
+                            <span ng-if="post.type == 'advert'">Advert</span>
+                            <span ng-if="post.type != 'advert'">{{ post.title }}</span>
+                        </div>
+                        <div class="story-text" ng-bind-html="post.te">
+                        </div>
+                        <div class="story-tags" ng-if="post.type != 'advert'">
+                            <button ng-click="addFilter(tag)" class="tag" ng-repeat="tag in post.ta" ng-class="tag.class">
+                                {{ tag.te }}
+                            </button>
+                        </div>
+                        <div class="story-report" ng-show="userHash != post.uh">
+                            <a href="javascript: void()" ng-click="reportPost(post)">Report</a>
+                        </div>
                     </div>
                 </div>
+
+                <button class="load-more" style="display: none" ng-click="loadPosts(false)">Load More</button>
             </div>
 
             <ul class="footer-tabs">
@@ -82,54 +119,46 @@
                 <li id="footer-tab-privacy">Privacy</li>
                 <li id="footer-tab-terms">Terms</li>
                 <li id="footer-tab-contact">Contact</li>
-                <li id="footer-tab-feed">Feed</li>
             </ul>
 
             <div class="footer">
                 <div style="display: block" id="footer-copy">
-                    &copy; 2015
+                    &copy; 2015 Goats on a Rope. All rope reserved for goats.
                 </div>
                 <div style="display: none" id="footer-tab-faq-content">
                     <a name="footer-tab-faq-section"></a>
                     <h2>Frequently Asked Questions</h2>
                     <h3>
-                        So, what is this exactly?
+                        Where are the questions?
                     </h3>
                     <p>
-                        wishtosay.com is partially a completely unscientific experiment, and idealistically an equally-unscientific tool &mdash; or at least it could be, but that is up to you. Use (or don't use) the filter options at the top
-                        of the screen to find posts of interest, and then [completely anonymously] post your own thoughts or responses if you feel like it. The entire point of this all is to provide
-                        a completely open and mostly uncensored space (within legal requirements) where users can say what they want, to anyone they want, anywhere in the world (off-world not yet directly supported,
-                        but don't let that stop you from creating new tags identifying alien species and worlds).
-                        This means that this site could become an incredible tool for imparting directed snippets of knowledge (anonymously), but it could also become a complete wasteland of typical internet comments and hate. We are hoping for the former, but the latter
-                        is entirely plausible as well &mdash; which is where the experimentation bit comes in. We will run this experiment as long as we can (within budget), but if there is some merit to
-                        the kind of content that gets posted then we will certainly attempt to prolong it further if possible.
+                        We're waiting for a couple to be frequently <a href="mailto:i.really@wishtosay.com?subject=future FAQ">asked</a>.
                     </p>
                 </div>
                 <div style="display: none" id="footer-tab-privacy-content">
                     <a name="footer-tab-privacy-section"></a>
                     <h2>Privacy Policy</h2>
                     <p>
+                        Don't post anything private and it won't be stored; later retrieved and publicly displayed; forwarded to your grandmother; re-posted to Reddit; posted to 9gag and then re-re-posted to Reddit; and finally a completely unrelated post is made to Slashdot a couple of days later. In short,
+                        don't post anything you don't want other people to see or read.
                     </p>
                 </div>
                 <div style="display: none" id="footer-tab-terms-content">
                     <a name="footer-tab-terms-section"></a>
                     <h2>Terms of Use</h2>
                     <p>
+                        Posts are made at your own discretion, but may be removed at ours. In general we won't censor posts, but will be forced to remove them if we receive too many complaints.
                     </p>
                 </div>
                 <div style="display: none" id="footer-tab-contact-content">
                     <a name="footer-tab-contact-section"></a>
                     <h2>Contact</h2>
                     <p>
-
+                        Comments, requests, and questions can be sent to <a href="mailto:i.really@wishtosay.com">i.really@wishtosay.com</a>. Hate mail will automatically be forwarded
+                        to your local kitten sanctuary. Do you really want the kittens to think that you hate them?
                     </p>
                 </div>
-                <div style="display: none" id="footer-tab-feed-content">
-                    <a name="footer-tab-feed-section"></a>
-                    <h2>Feed</h2>
-                    <p>
-                    </p>
-                </div>
+            </div>
         </div>
 
         <div class="footer-post">
@@ -151,16 +180,16 @@
             if($(this).hasClass('selected'))
             {
                 $(this).removeClass('selected');
-                $('#' + id + '-content').hide(400);
-                $('#footer-copy').show(400);
+                $('#' + id + '-content').slideToggle(400);
+                $('#footer-copy').slideToggle(400);
             }
             else
             {
                 $('ul.footer-tabs li').removeClass('selected');
                 $(this).addClass('selected');
 
-                $('.footer div').hide(400);
-                $('#' + id + '-content').show(400);
+                $('.footer div:visible').slideToggle(400);
+                $('#' + id + '-content').slideToggle(400);
                 scrollToAnchor(id + '-section');
             }
         });

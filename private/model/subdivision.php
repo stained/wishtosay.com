@@ -3,7 +3,7 @@
 use \System\Mysql;
 use \Util\String;
 
-class Subdivision extends Country {
+class SubDivision extends Country {
 
     const SEARCH_WEIGHT = 3;
 
@@ -79,7 +79,7 @@ class Subdivision extends Country {
 
     /**
      * @param array $data
-     * @return Subdivision
+     * @return SubDivision
      */
     private static function init($data)
     {
@@ -98,7 +98,7 @@ class Subdivision extends Country {
     }
 
     /**
-     * @return Subdivision[]
+     * @return SubDivision[]
      */
     public static function getAll()
     {
@@ -119,7 +119,7 @@ class Subdivision extends Country {
      * Get subdivision by id
      *
      * @param int $id
-     * @return Subdivision|null
+     * @return SubDivision|null
      */
     public static function getById($id)
     {
@@ -132,7 +132,7 @@ class Subdivision extends Country {
      * Get subdivision by code
      *
      * @param string code
-     * @return Subdivision|null
+     * @return SubDivision|null
      */
     public static function getByCode($code)
     {
@@ -146,7 +146,7 @@ class Subdivision extends Country {
      * @param Country $country
      * @param string $subdivision
      * @param string $code
-     * @return bool|Subdivision
+     * @return bool|SubDivision
      */
     public static function createSubdivision($continent, $country, $subdivision, $code)
     {
@@ -200,7 +200,7 @@ class Subdivision extends Country {
         return array(
             'i'=>$this->id,
             'ty'=>'subdivision',
-            'te'=>$this->getSubdivision() . ", " . $country->getCountry()
+            'te'=>utf8_decode($this->getSubdivision() . ", " . $country->getCountry())
         );
     }
 

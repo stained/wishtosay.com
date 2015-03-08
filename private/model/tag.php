@@ -142,7 +142,7 @@ class Tag extends root {
         return array(
             'i'=>$this->id,
             'ty'=>'tag',
-            'te'=>$this->getTag()
+            'te'=>utf8_decode($this->getTag())
         );
     }
 

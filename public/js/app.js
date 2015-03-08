@@ -153,7 +153,7 @@
     }]);
 
     app.factory('PostClient', ['$resource', function($resource) {
-        return $resource('/post/:controllerMethod/:methodQuery',
+        return $resource('/post/:controllerMethod/:methodQuery/:start/:count',
             {
                 controllerMethod: "@controllerMethod",
                 methodQuery: "@methodQuery"
@@ -171,9 +171,26 @@
                     method: "GET",
                     params: {
                         controllerMethod: "load",
-                        methodQuery: "@methodQuery"
+                        methodQuery: "@methodQuery",
+                        start: "@start",
+                        count: "@count"
                     },
                     isArray: false
+                },
+                rand: {
+                    method: "GET",
+                    params: {
+                        controllerMethod: "rand"
+                    },
+                    isArray: false
+                },
+                report: {
+                    method: "POST",
+                    params: {
+                        controllerMethod: "downvote",
+                        methodQuery: "@methodQuery"
+                    },
+                    isArray: true
                 }
             }
         );
@@ -181,6 +198,20 @@
 
     app.controller('MainCtrl', function ($q, $scope, SearchClient, PostClient) {
         $scope.urlHash = "";
+
+        $scope.loading = function(show) {
+            if (show) {
+                $('.loading').fadeIn(400);
+            }
+            else {
+                $('.loading').delay(400).fadeOut(400);
+            }
+        };
+
+        $scope.error = function(message) {
+            $('.error-text').text(message);
+            $('.error').fadeIn(400).delay(1500).fadeOut(400);
+        };
 
         $scope.age = {'from': 15, 'to': 35};
 
@@ -195,37 +226,109 @@
 
         $scope.posts = [];
 
+        $scope.userHash = '';
+
+        $scope.smoothScrollTop = function(){
+            $('html,body').animate({
+                scrollTop: $('.content').top
+            }, 400);
+        }
+
         $scope.doPost = function() {
+            if ($scope.post == undefined)
+            {
+                $scope.error('Please enter some text');
+                $scope.loading(false);
+                return;
+            }
 
             var data = this.createFilter();
             data.te = $scope.post;
 
+            $scope.loading(true);
+
             PostClient.create(data,
                 function success(result) {
+                    $scope.smoothScrollTop();
+
+                    if (result[0]['ta'] != undefined)
+                    {
+                        $.each(result[0]['ta'], function(index, tag) {
+                            $.each($scope.searchFilterTags, function(searchIndex, searchTag) {
+                                if (tag.te == searchTag.text && tag.ty == searchTag.type)
+                                {
+                                    searchTag.id = tag.i;
+                                }
+                            });
+                        });
+                    }
+
                     $scope.posts.unshift($scope.loadPost(result[0]));
                     $scope.post = "";
                     $("#post").val("");
                     $scope.adaptPostFooter();
+                    $scope.loading(false);
                 },
                 function error(result) {
-                    console.log(result);
+                    $scope.error('Something went wrong, please try again.');
+                    $scope.loading(false);
                 }
             );
         }
 
-        $scope.loadPosts = function() {
+        // page loading
+        $scope.start = 0;
+        $scope.count = 25;
 
-            PostClient.load({methodQuery: $scope.urlHash.substr(1)},
+        $scope.loadPosts = function(clear) {
+            $scope.loading(true);
+            $('.load-more').text('Loading...');
+
+            var hash = $scope.urlHash.substr(0, 1) == '#' ? $scope.urlHash.substr(1) : $scope.urlHash;
+
+            if(clear) {
+                $scope.start = 0;
+                $scope.posts = [];
+                $scope.smoothScrollTop();
+                $('.load-more').hide(400);
+            }
+
+            PostClient.load({methodQuery: hash, start: $scope.start, count: $scope.count},
                 function success(data) {
-                    $scope.posts = [];
+
+                    if (data['uh'] != undefined)
+                    {
+                        $scope.userHash = data['uh'];
+                    }
 
                     if (data['c'] != undefined)
                     {
                         if (data['c'] > 0 && data['p'] != undefined)
                         {
                             $.each(data['p'], function(index, post) {
-                                $scope.posts.push($scope.loadPost(post));
+                                // check for downvotes at this point, one day we may consider adding in upvotes
+                                // then we can just display it rather than hide
+                                if (post.up == undefined || post.up != 0)
+                                {
+                                    $scope.posts.push($scope.loadPost(post));
+                                }
                             });
+
+                            if ($scope.posts.length > 0)
+                            {
+                                $scope.start += $scope.count;
+
+                                if (data['t'] > $scope.start + $scope.count) {
+                                    // more enabled
+                                    $('.load-more').show(400);
+                                }
+                                else {
+                                    // more disabled
+                                    $('.load-more').hide(400);
+                                }
+
+                                $('.load-more').text('Load More');
+                            }
                         }
                         else
                         {
@@ -233,8 +336,49 @@
                             $scope.posts = [];
                         }
                     }
+
+                    $scope.loading(false);
                 },
                 function error() {
+                    $scope.loading(false);
+                }
+            );
+        }
+
+        $scope.reportPost = function(post) {
+            $scope.posts.splice( $.inArray(post, $scope.posts), 1 );
+            PostClient.report({methodQuery: post.id});
+        }
+
+        $scope.loadRandom = function() {
+            $scope.loading(true);
+
+            PostClient.rand({},
+                function success(data) {
+                    $scope.searchFilterTags = [];
+
+                    if (data['af'] != undefined)
+                    {
+                        $scope.age.from = data['af'];
+                    }
+
+                    if (data['at'] != undefined)
+                    {
+                        $scope.age.to = data['at'];
+                    }
+
+                    if (data['ta'] != undefined)
+                    {
+                        $.each(data['ta'], function(tagindex, tag) {
+                            $scope.addFilter(tag);
+                        });
+                    }
+
+                    $scope.updateUrlHash();
+                    $scope.loading(false);
+                },
+                function error() {
+                    $scope.loading(false);
                 }
             );
         }
@@ -279,7 +423,7 @@
             var found = false;
 
             $.each($scope.searchFilterTags, function(index, searchTag) {
-                if(tag.ty == searchTag.type && tag.i == searchTag.id)
+                if(tag.ty == searchTag.type && tag.te == searchTag.text)
                 {
                     found = true;
                 }
@@ -319,7 +463,7 @@
 
                     if ($scope.setFilter(data)) {
                         $scope.urlHash = hash;
-                        $scope.loadPosts();
+                        $scope.loadPosts(true);
                     }
                 } catch (e) {
                     return;

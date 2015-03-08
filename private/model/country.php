@@ -189,7 +189,7 @@ class Country extends Continent {
         return array(
             'i'=>$this->id,
             'ty'=>'country',
-            'te'=>$this->getCountry()
+            'te'=>utf8_decode($this->getCountry())
         );
     }
 

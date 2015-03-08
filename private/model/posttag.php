@@ -3,7 +3,7 @@
 use \System\Mysql;
 use \Util\String;
 
-class Posttag extends root {
+class PostTag extends root {
 
     /**
      * @var int
@@ -67,7 +67,7 @@ class Posttag extends root {
                 break;
 
             case 'subdivision':
-                $tag = Subdivision::getById($this->tagId);
+                $tag = SubDivision::getById($this->tagId);
                 break;
 
             case 'city':
@@ -96,8 +96,39 @@ class Posttag extends root {
     }
 
     /**
+     * @return array
+     */
+    public static function getRandom()
+    {
+        $db = Mysql::getInstance();
+
+        $query = 'SELECT pt.*, p.ageFrom, p.ageTo FROM posttag pt '.
+                 'RIGHT JOIN (SELECT p.id AS id, p.ageFrom AS ageFrom, p.ageTo AS ageTo ' .
+                 'FROM post p ORDER BY RAND() LIMIT 1) p ON (p.id = pt.postId)';
+
+        $data = $db->query($query);
+
+        $rows = array();
+        $ageFrom = 0;
+        $ageTo = 90;
+
+        while ($row = $data->fetch_one())
+        {
+            $ageFrom = $row['ageFrom'];
+            $ageTo = $row['ageTo'];
+
+            if (!empty($row['id']))
+            {
+                $rows[] = static::init($row);
+            }
+        }
+
+        return array($ageFrom, $ageTo, $rows);
+    }
+
+    /**
      * @param array $data
-     * @return Posttag
+     * @return PostTag
      */
     private static function init($data)
     {
@@ -115,7 +146,7 @@ class Posttag extends root {
     }
 
     /**
-     * @return Posttag[]
+     * @return PostTag[]
      */
     public static function getAllForPost($post)
     {
@@ -136,7 +167,7 @@ class Posttag extends root {
      * Get posttag by id
      *
      * @param int $id
-     * @return Posttag|null
+     * @return PostTag|null
      */
     public static function getById($id)
     {
@@ -148,7 +179,7 @@ class Posttag extends root {
     /**
      * @param Post $post
      * @param Root $tag
-     * @return bool|Posttag
+     * @return bool|PostTag
      */
     public static function createPostTag($post, $tag)
     {

@@ -7,7 +7,7 @@ use \System\Config;
 
 use \Model\Continent;
 use \Model\Country;
-use \Model\Subdivision;
+use \Model\SubDivision;
 use \Model\City;
 use \Model\Gender;
 use \Model\Tag;
@@ -103,7 +103,7 @@ class Search extends Root {
             }
 
             $response[] = array('id'=>$hit['_id'],
-                                'text'=>$hit['_source']['tag'],
+                                'text'=>utf8_decode($hit['_source']['tag']),
                                 'type'=>$hit['_type'],
                                 'class'=>$class
             );
@@ -158,7 +158,7 @@ class Search extends Root {
 
         static::createSearchArray(Continent::getAll());
         static::createSearchArray(Country::getAll());
-        static::createSearchArray(Subdivision::getAll());
+        static::createSearchArray(SubDivision::getAll());
         static::createSearchArray(City::getAll());
         static::createSearchArray(Gender::getAll());
         static::createSearchArray(Tag::getAll());

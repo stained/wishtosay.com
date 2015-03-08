@@ -129,7 +129,7 @@ class Gender extends root {
         return array(
             'i'=>$this->id,
             'ty'=>'gender',
-            'te'=>$this->getGender()
+            'te'=>utf8_decode($this->getGender())
         );
     }
 

@@ -9,7 +9,7 @@ body {
     width: 100%;
     margin: 0px;
     padding: 0px;
-    font-family: sans-serif;
+    font-family: 'Open Sans', sans-serif;
     font-weight: 300;
 }
 
@@ -71,7 +71,11 @@ input[type=text] {
 
 .container {
     width: 100%;
-    min-height: 1000px;
+}
+
+.outer-container {
+    width: 100%;
+    margin-bottom: 150px;
 }
 
 .margin-10 {
@@ -88,6 +92,11 @@ input[type=text] {
     box-shadow: inset 1px 1px 1px #202020, 0px -4px 10px #222;
     background: #3d3d3d;
     color: white;
+    font-family: inherit;
+}
+
+textarea {
+    font-family: inherit;
 }
 
 .footer-post {
@@ -97,6 +106,37 @@ input[type=text] {
     bottom: 0px;
     text-align: center;
     border-bottom: 1px solid #606060;
+}
+
+.load-more {
+    margin: 1%;
+    color: white;
+    text-align: center;
+    height: 32px;
+    background: #f55e3b;
+    border: 1px solid #cb3816;
+    border-radius: 5px;
+    font-size: small;
+    width: 98%;
+}
+
+.load-more:hover {
+    background: #aa2000;
+}
+
+.load-random {
+    margin: 20px;
+    color: white;
+    text-align: center;
+    height: 32px;
+    background: #f55e3b;
+    border: 1px solid #cb3816;
+    border-radius: 5px;
+    font-size: small;
+}
+
+.load-random:hover {
+    background: #aa2000;
 }
 
 .footer-post button {
@@ -125,6 +165,7 @@ input[type=text] {
     background: black;
     width: 100%;
     z-index: -200;
+    text-align: center;
 }
 
 .story {
@@ -133,7 +174,121 @@ input[type=text] {
     background: #202020;
     border-radius: 5px;
     word-wrap: break-word;
+    text-align: left;
 }
+
+.loading, .error {
+    z-index: 100;
+    background: rgba(255, 255, 255, 0.95);
+    position: fixed;
+    padding-top: 10px;
+    border: 1px solid #606060;
+    text-align: center;
+    font-size: medium;
+    color: black;
+    top: 50%;
+    left: 50%;
+    width: 280px;
+    height: 70px;
+    margin-left: -140px;
+    margin-top: -35px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-radius: 5px;
+    box-shadow: 2px 2px 10px #202020;
+}
+
+.error-icon
+{
+    position: fixed;
+    width: 30px;
+    height: 30px;
+    background: url("/img/erroricon.png");
+    background-size: 30px 30px;
+    left: 50%;
+    margin-left: -15px;
+}
+
+.error-text
+{
+    padding-top: 35px;
+}
+
+.loader:before,
+.loader:after,
+.loader {
+    width: 30px;
+    height: 30px;
+    padding: 10px;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    -webkit-animation: load7 1.8s infinite ease-in-out;
+    animation: load7 1.8s infinite ease-in-out;
+    background: url('/img/star.png') no-repeat;
+    background-size: 30px 30px;
+    background-position: 50% 50%;
+}
+.loader {
+    margin: 0em auto;
+    font-size: 10px;
+    position: relative;
+    text-indent: -9999em;
+    -webkit-animation-delay: 0.16s;
+    animation-delay: 0.16s;
+}
+.loader:before {
+    left: -3.5em;
+}
+.loader:after {
+    left: 3.5em;
+    -webkit-animation-delay: 0.32s;
+    animation-delay: 0.32s;
+}
+.loader:before,
+.loader:after {
+    content: '';
+    position: absolute;
+    top: 0;
+}
+@-webkit-keyframes load7 {
+    0%,
+    80%,
+    100% {
+        background-size: 30px 30px;
+        opacity: 1.0;
+    }
+    40% {
+        background-size: 10px 10px;
+        opacity: 0;
+    }
+}
+@keyframes load7 {
+    0%,
+    80%,
+    100% {
+        background-size: 30px 30px;
+        opacity: 1.0;
+    }
+    40% {
+        background-size: 10px 10px;
+        opacity: 0;
+    }
+}
+
+.story-none {
+    text-align: center;
+    color: #999;
+    margin-bottom: 150px;
+    font-size: large;
+}
+
+.story-none h2 {
+    font-size: x-large;
+    text-align: center;
+    color: rgba(153,153,153, 0.8);
+    text-shadow: 1px 1px 1px #343338, 0 0 0 #999, 1px 1px 1px #606060;
+}
+
 
 .header {
     width: 100%;
@@ -144,6 +299,7 @@ input[type=text] {
     border-bottom: 1px solid #606060;
     box-shadow: inset 1px -1px 1px #202020;
 }
+
 
 @media only screen and (min-width: 1px) {
     .story {
@@ -162,6 +318,14 @@ input[type=text] {
         width: 98%;
     }
 
+    .story-none, .load-more {
+        width: 98%;
+    }
+
+    .story-advert, .story-featured {
+        width: 97.5%;
+    }
+
     .header {
         height: 144px;
         background: url("/img/header/med.png") no-repeat #343338;
@@ -174,8 +338,12 @@ input[type=text] {
         width: 48.5%;
     }
 
-    .story-featured {
+    .story-featured, .load-more  {
         width: 98%;
+    }
+
+    .story-advert {
+        width: 48%;
     }
 
     .header {
@@ -186,15 +354,19 @@ input[type=text] {
 }
 
 @media only screen and (min-width: 900px) {
-    .story {
+    .story, .load-more {
         width: 32%;
     }
 
-    .story-featured {
-        width: 65%;
+    .story-featured,  {
+        width: 64.5%;
     }
 
-   .header {
+    .story-advert {
+        width: 31.8%;
+    }
+
+    .header {
         height: 259px;
         background: url("/img/header/large.png") no-repeat #343338;
         background-position: center top 0px;
@@ -206,10 +378,51 @@ input[type=text] {
         width: 23.75%;
     }
 
-    .story-featured {
-        width: 48.5%;
+    .story-featured, .load-more {
+        width: 48.2%;
+    }
+
+    .story-advert {
+        width: 23.65%;
     }
 }
+
+@media only screen and (min-width: 1px) and (-webkit-min-device-pixel-ratio: 1.5) and (min-resolution: 144dpi) {
+    .header {
+        height: 92px;
+        background: url("/img/header/small@2x.png") no-repeat #343338;
+        background-position: center top;
+        background-size: 320px 92px;
+    }
+}
+
+@media only screen and (min-width: 500px)  and (-webkit-min-device-pixel-ratio: 1.5)  and (min-resolution: 144dpi) {
+    .header {
+        height: 144px;
+        background: url("/img/header/med@2x.png") no-repeat #343338;
+        background-position: center top;
+        background-size: 500px 144px;
+    }
+}
+
+@media only screen and (min-width: 640px) and (-webkit-min-device-pixel-ratio: 1.5) and (min-resolution: 144dpi) {
+    .header {
+        height: 184px;
+        background: url("/img/header/med-large@2x.png") no-repeat #343338;
+        background-position: center top 0px;
+        background-size: 640px 184px;
+    }
+}
+
+@media only screen and (min-width: 900px) and (-webkit-min-device-pixel-ratio: 1.5) and (min-resolution: 144dpi) {
+    .header {
+        height: 259px;
+        background: url("/img/header/large@2x.png") no-repeat #343338;
+        background-position: center top 0px;
+        background-size: 900px 259px;
+    }
+}
+
 
 .story-featured {
     border: 2px solid #dd0000;
@@ -238,7 +451,7 @@ input[type=text] {
 }
 
 .story-featured .story-text {
-    color: #000;
+    color: #dd0000;
 }
 
 .story-featured .story-title {
@@ -258,6 +471,12 @@ input[type=text] {
     padding: 10px;
 }
 
+.story-report {
+    float: right;
+    padding: 10px;
+    font-size: small;
+}
+
 .tag {
     margin-top: 5px;
     margin-right: 5px;
@@ -272,8 +491,8 @@ button.tag {
     color: #f55e3b;
     border: 1px solid #606060;
     border-top: 3px solid #343338;
-    box-shadow: inset 1px -1px 1px #202020, 0px 4px 10px #222;
-    border-radius: 0 0 10px 10px;
+    box-shadow: inset 1px -1px 1px #202020, 0px 4px 4px #222;
+    border-radius: 3px 3px 10px 10px;
     width: 50px;
     height: 30px;
     text-align: center;
@@ -282,7 +501,7 @@ button.tag {
     left:0;
     right:0;
     margin: auto;
-    margin-top: -2px;
+    margin-top: -3px;
 }
 
 .filter-toggle:hover {
@@ -297,7 +516,6 @@ button.tag {
     text-align: center;
     color: #999;
     clear: both;
-    padding-bottom: 50px;
     line-height: 25px;
     border-top: 1px solid #606060;
     box-shadow: inset 1px 1px 1px #202020;
@@ -334,6 +552,7 @@ ul.footer-tabs {
     padding: 0;
     list-style-type: none;
     text-align: center;
+    font-size: small;
 }
 
 ul.footer-tabs li {
@@ -344,7 +563,7 @@ ul.footer-tabs li {
     border-bottom: 1px solid #343338;
     box-shadow: inset 1px 1px 1px #202020, 0px -4px 10px #222;
     border-radius: 10px 10px 0 0;
-    padding: 8px;
+    padding: 6px 6px 8px 8px;
     height: 10px;
     text-align: center;
     background: #343338;
@@ -356,10 +575,10 @@ ul.footer-tabs li.selected {
     display: inline;
     color: #999;
     border: 1px solid #606060;
-    border-bottom: 3px solid #343338;
-    box-shadow: inset 1px 1px 1px #202020, 0px -4px 10px #222;
-    border-radius: 10px 10px 0 0;
-    padding: 8px;
+    border-bottom: 4px solid #343338;
+    box-shadow: inset 1px 1px 1px #202020;
+    border-radius: 10px 10px 3px 3px;
+    padding: 6px 6px 8px 8px;
     text-align: center;
     line-height: 30px;
     background: #343338;

@@ -3,7 +3,7 @@
 use \System\Mysql;
 use \Util\String;
 
-class City extends Subdivision {
+class City extends SubDivision {
 
     const SEARCH_WEIGHT = 2;
 
@@ -59,15 +59,15 @@ class City extends Subdivision {
     }
 
     /**
-     * @return Subdivision
+     * @return SubDivision
      */
     public function getSubdivision()
     {
-        return Subdivision::getById($this->subdivisionId);
+        return SubDivision::getById($this->subdivisionId);
     }
 
     /**
-     * @param Subdivision $subDivision
+     * @param SubDivision $subDivision
      * @return $this
      */
     public function setSubdivision($subDivision)
@@ -167,7 +167,7 @@ class City extends Subdivision {
     /**
      * @param Continent $continent
      * @param Country $country
-     * @param Subdivision $subDivision
+     * @param SubDivision $subDivision
      * @param string $city
      * @param float $latitude
      * @param float $longitude
@@ -229,7 +229,7 @@ class City extends Subdivision {
         return array(
             'i'=>$this->id,
             'ty'=>'city',
-            'te'=>$this->getCity() . ", " . $country->getCountry()
+            'te'=>utf8_decode($this->getCity() . ", " . $country->getCountry())
         );
     }
 

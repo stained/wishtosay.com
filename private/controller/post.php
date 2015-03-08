@@ -3,12 +3,13 @@
 namespace Controller;
 
 use \Elasticsearch\Client;
-use Model\Posttag;
+use Model\PostTag;
+use Model\PostVoteLog;
 use \System\Config;
 
 use \Model\Continent;
 use \Model\Country;
-use \Model\Subdivision;
+use \Model\SubDivision;
 use \Model\City;
 use \Model\Gender;
 use \Model\Tag;
@@ -86,20 +87,94 @@ class Post extends Root {
             }
         }
 
+        $start = !empty($parameters[1]) && is_numeric($parameters[1]) ? $parameters[1] : 0;
+        $count = !empty($parameters[2]) && is_numeric($parameters[2]) ? $parameters[2] : 25;
+
         // search for any posts within that range and with tags
-        $posts = \Model\Post::getAllForTagsAndAgeRange($searchTags, $age['f'], $age['t']);
+        list($totalRows, $posts) = \Model\Post::getAllForTagsAndAgeRange($searchTags, $age['f'], $age['t'], $start, $count);
 
         if(empty($posts))
         {
             return static::toJson(array('c'=>0));
         }
 
+        $userHash = static::getUserHash();
+
         foreach ($posts as &$post)
         {
+            // check for up/down vote from user
+            $voteEntry = PostVoteLog::getByPostAndUserHash($post, $userHash);
+
             $post = $post->toJsonArray();
+
+            if (!empty($voteEntry))
+            {
+                $post['up'] = $voteEntry->wasUpvoted();
+            }
         }
 
-        return static::toJson(array('c'=>count($posts), 'p'=>$posts));
+        return static::toJson(array('c'=>count($posts), 'p'=>$posts, 't'=>$totalRows, 'uh'=>$userHash));
+    }
+
+    /**
+     * Return a list of random filter tags and age
+     *
+     * @return \System\View
+     */
+    public static function rand() {
+        list($ageFrom, $ageTo, $rows) = PostTag::getRandom();
+
+        $tags = array();
+
+        if (!empty($rows))
+        {
+            foreach ($rows as $row)
+            {
+                $tags[] = $row->toJsonArray();
+            }
+        }
+
+        $response = array('af'=>$ageFrom, 'at'=>$ageTo, 'ta'=>$tags);
+        return static::toJson($response, 200);
+    }
+
+    public static function downvote($parameters = array())
+    {
+        if (empty($parameters))
+        {
+            return static::toJson(array(), 400);
+        }
+
+        $postId = $parameters[0];
+
+        $post = \Model\Post::getById($postId);
+
+        if (empty($post))
+        {
+            return static::toJson(array(), 404);
+        }
+
+        $userHash = static::getUserHash();
+
+        if ($post->getUserHash() == $userHash)
+        {
+            return static::toJson(array(), 200);
+        }
+
+        $voteEntry = PostVoteLog::getByPostAndUserHash($post, $userHash);
+
+        if (empty($voteEntry))
+        {
+            $voteEntry = PostVoteLog::createLogEntry($post, $userHash);
+        }
+        else
+        {
+            $voteEntry->downVote()->update();
+        }
+
+        $post->incrementDownVotes();
+
+        return static::toJson(array(), 200);
     }
 
     /**
@@ -109,7 +184,6 @@ class Post extends Root {
      * @return \System\View
      */
     public static function create($parameters = array()) {
-
         $data = json_decode(file_get_contents('php://input'), true);
 
         if (empty($data))
@@ -139,7 +213,7 @@ class Post extends Root {
         }
 
         // create post
-        $post = \Model\Post::createPost($text, $age['f'], $age['t']);
+        $post = \Model\Post::createPost($text, $age['f'], $age['t'], static::getUserHash());
 
         if (empty($post))
         {
@@ -160,7 +234,7 @@ class Post extends Root {
 
             foreach ($resolvedTags as $tag)
             {
-                $postTag = Posttag::createPostTag($post, $tag);
+                $postTag = PostTag::createPostTag($post, $tag);
 
                 if (!empty($postTag))
                 {
@@ -216,7 +290,11 @@ class Post extends Root {
                             break;
 
                         case 'subdivision':
-                            $tag = Subdivision::getById($id);
+                            $tag = SubDivision::getById($id);
+                            break;
+
+                        case 'city':
+                            $tag = City::getById($id);
                             break;
 
                         case 'gender';

@@ -159,7 +159,7 @@ class Continent extends root {
         return array(
             'i'=>$this->id,
             'ty'=>'continent',
-            'te'=>$this->getContinent()
+            'te'=>utf8_decode($this->getContinent())
         );
     }
 

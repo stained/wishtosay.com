@@ -111,7 +111,7 @@ if (($handle = fopen("../database/geolitelocations.csv", "r")) !== FALSE)
         {
             if($subdivision1Name != null)
             {
-                $subdivision = \Model\Subdivision::createSubdivision($continent, $country, $subdivision1Name, $subdivision1Code);
+                $subdivision = \Model\SubDivision::createSubdivision($continent, $country, $subdivision1Name, $subdivision1Code);
                 $subdivisions[$testCode] = $subdivision;
             }
         }

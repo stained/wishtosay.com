@@ -43,9 +43,14 @@ class Post extends root {
     protected $ageTo;
 
     /**
-     * @var Posttag[]
+     * @var PostTag[]
      */
     protected $postTags;
+
+    /**
+     * @var string
+     */
+    protected $userHash;
 
     /**
      * @return int
@@ -88,6 +93,14 @@ class Post extends root {
     }
 
     /**
+     * @return string
+     */
+    public function getUserHash()
+    {
+        return $this->userHash;
+    }
+
+    /**
      * @return $this
      */
     public function incrementUpVotes()
@@ -112,7 +125,7 @@ class Post extends root {
     }
 
     /**
-     * @param Posttag[] $tags
+     * @param PostTag[] $tags
      * @return $this
      */
     public function setTags($tags)
@@ -122,7 +135,7 @@ class Post extends root {
     }
 
     /**
-     * @return Posttag[]
+     * @return PostTag[]
      */
     public function getPostTags()
     {
@@ -131,7 +144,7 @@ class Post extends root {
             return $this->postTags;
         }
 
-        $this->postTags = Posttag::getAllForPost($this);
+        $this->postTags = PostTag::getAllForPost($this);
         return $this->postTags;
     }
 
@@ -154,6 +167,7 @@ class Post extends root {
         $item->downVotes = $data['downVotes'];
         $item->ageFrom = $data['ageFrom'];
         $item->ageTo = $data['ageTo'];
+        $item->userHash = $data['userHash'];
         return $item;
     }
 
@@ -169,7 +183,7 @@ class Post extends root {
     {
         $db = Mysql::getInstance();
 
-        $query = 'SELECT p.* FROM post p ';
+        $query = 'SELECT SQL_CALC_FOUND_ROWS p.* FROM post p ';
         $bindings = array();
 
         if (!empty($tags))
@@ -187,14 +201,13 @@ class Post extends root {
             }
         }
 
-        $query .= 'WHERE ageTo >= :ageTo AND ageFrom <= :ageFrom GROUP BY p.id ORDER BY timestamp DESC LIMIT :start,:limit';
-        $bindings['ageTo'] = $ageTo;
-        $bindings['ageFrom'] = $ageFrom;
-        $bindings['start'] = $start;
-        $bindings['limit'] = $limit;
+        $query .= 'WHERE ageTo >= :ageTo AND ageFrom <= :ageFrom AND downVotes < 5 GROUP BY p.id ORDER BY timestamp DESC LIMIT :start,:limit';
+        $bindings['ageTo'] = intval($ageTo);
+        $bindings['ageFrom'] = intval($ageFrom);
+        $bindings['start'] = intval($start);
+        $bindings['limit'] = intval($limit);
 
         $data = $db->query($query, $bindings);
-
         $rows = array();
 
         while ($row = $data->fetch_one())
@@ -202,7 +215,7 @@ class Post extends root {
             $rows[] = static::init($row);
         }
 
-        return $rows;
+        return array($data->found_rows, $rows);
     }
 
     /**
@@ -222,9 +235,10 @@ class Post extends root {
      * @param string $text
      * @param int $ageFrom;
      * @param int $ageTo;
+     * @param string $userHash;
      * @return bool|Post
      */
-    public static function createPost($text, $ageFrom, $ageTo)
+    public static function createPost($text, $ageFrom, $ageTo, $userHash)
     {
         $item = new self;
         $item->text = $text;
@@ -233,6 +247,7 @@ class Post extends root {
         $item->timestamp = time();
         $item->upVotes = 0;
         $item->downVotes = 0;
+        $item->userHash = $userHash;
 
         if ($item->create())
         {
@@ -252,7 +267,8 @@ class Post extends root {
             'ageFrom' => $this->ageFrom,
             'ageTo' => $this->ageTo,
             'upVotes' => $this->upVotes,
-            'downVotes' => $this->downVotes
+            'downVotes' => $this->downVotes,
+            'userHash' => $this->userHash
         )))
         {
             $this->id = $db->insert_id();
@@ -296,7 +312,8 @@ class Post extends root {
             'ti'=>$this->timestamp,
             'a'=>array('f'=>$this->ageFrom, 't'=>$this->ageTo),
             'v'=>array('u'=>$this->upVotes, 'd'=>$this->downVotes),
-            'ta'=>$tagJsonArray
+            'ta'=>$tagJsonArray,
+            'uh'=>$this->userHash
         );
     }
 

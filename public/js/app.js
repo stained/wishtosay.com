@@ -235,7 +235,7 @@
         }
 
         $scope.doPost = function() {
-            if ($scope.post == undefined)
+            if ($scope.post == undefined || $scope.post == '')
             {
                 $scope.error('Please enter some text');
                 $scope.loading(false);

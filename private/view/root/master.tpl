@@ -2,6 +2,7 @@
 <html lang="en" ng-app="app" ng-controller="MainCtrl">
     <head>
         <meta charset="utf-8">
+        <meta name="google-site-verification" content="fvH2Hi8DUYO0f0kwPs5vd3n6KQ3WEkicBsQLNPLmLEs" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=0">
 
@@ -53,7 +54,7 @@
     </head>
     <body>
 
-        <div class="loading">
+        <div class="loading" style="display: none">
             <div class="loader"></div>
             Please stand by for just a moment.
         </div>

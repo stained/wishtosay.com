@@ -233,7 +233,7 @@ tagsInput.directive('tagsInput', ["$timeout","$document","tagsInputConfig", func
                 minTags: [Number, 0],
                 maxTags: [Number, MAX_SAFE_INTEGER],
                 displayProperty: [String, 'text'],
-                displayClassProperty: [String, 'class'],
+                displayClassProperty: [String, 'tclass'],
                 displayStyleProperty: [String, 'style'],
                 allowLeftoverText: [Boolean, false],
                 addFromAutocompleteOnly: [Boolean, false]
@@ -261,7 +261,7 @@ tagsInput.directive('tagsInput', ["$timeout","$document","tagsInputConfig", func
                         return $scope.newTag.text;
                     },
                     getCurrentTagClass: function() {
-                        return $scope.newTag.class;
+                        return $scope.newTag.tclass;
                     },
                     getCurrentTagStyle: function() {
                         return $scope.newTag.style;
@@ -325,7 +325,7 @@ tagsInput.directive('tagsInput', ["$timeout","$document","tagsInputConfig", func
                     }
                 });
 
-            scope.newTag = { text: '', class: '', style: '', invalid: null };
+            scope.newTag = { text: '', tclass: '', style: '', invalid: null };
 
             scope.getDisplayText = function(tag) {
                 return safeToString(tag[options.displayProperty]);

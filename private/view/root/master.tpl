@@ -32,25 +32,10 @@
 
         <title>Wish to Say</title>
 
-        <link rel="stylesheet" href="/css/app.css">
-        <link rel="stylesheet" href="/css/jquery.nouislider.css">
-        <link rel="stylesheet" href="/css/jquery.nouislider.pips.css">
-        <link rel="stylesheet" href="/css/ng-tags-input.css">
+        <link rel="stylesheet" href="/css/all.min.css">
+        <script src="/js/all.min.js"></script>
 
         <link href='http://fonts.googleapis.com/css?family=Open+Sans:700,300,400' rel='stylesheet' type='text/css'>
-
-        <script src="/js/jquery-1.11.2.min.js"></script>
-        <script src="/js/angular.min.js"></script>
-        <script src="/js/angular-resource.js">
-        <script src="/js/jquery.liblink.js"></script>
-        <script src="/js/jquery.masonry.min.js"></script>
-        <script src="/js/jquery.nouislider.all.js"></script>
-        <script src="/js/angular.nouislider.js"></script>
-        <script src="/js/angular.masonry.js"></script>
-        <script src="/js/sanitize.js"></script>
-        <script src="/js/ng-tags-input.js"></script>
-        <script src="/js/moment.min.js"></script>
-        <script src="/js/app.js"></script>
     </head>
     <body>
 
@@ -103,7 +88,7 @@
                         <div class="story-text" ng-bind-html="post.te">
                         </div>
                         <div class="story-tags" ng-if="post.type != 'advert'">
-                            <button ng-click="addFilter(tag)" class="tag" ng-repeat="tag in post.ta" ng-class="tag.class">
+                            <button ng-click="addFilter(tag)" class="tag" ng-repeat="tag in post.ta" ng-class="tag.tclass">
                                 {{ tag.te }}
                             </button>
                         </div>

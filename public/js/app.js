@@ -400,15 +400,15 @@
                         case 'country':
                         case 'subdivision':
                         case 'city':
-                            tag.class = 'tag-location';
+                            tag.tclass = 'tag-location';
                             break;
 
                         case 'gender':
-                            tag.class = 'tag-gender'
+                            tag.tclass = 'tag-gender'
                             break;
 
                         default:
-                            tag.class = '';
+                            tag.tclass = '';
                             break;
                     }
                 });
@@ -512,7 +512,7 @@
 
             if (tag.c != undefined)
             {
-                newTag.class = tag.c;
+                newTag.tclass = tag.c;
             }
             else
             {
@@ -522,15 +522,15 @@
                     case 'country':
                     case 'subdivision':
                     case 'city':
-                        newTag.class = 'tag-location';
+                        newTag.tclass = 'tag-location';
                         break;
 
                     case 'gender':
-                        newTag.class = 'tag-gender'
+                        newTag.tclass = 'tag-gender'
                         break;
 
                     default:
-                        newTag.class = '';
+                        newTag.tclass = '';
                         break;
                 }
             }

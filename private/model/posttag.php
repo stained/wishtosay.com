@@ -110,7 +110,7 @@ class PostTag extends root {
 
         $rows = array();
         $ageFrom = 0;
-        $ageTo = 90;
+        $ageTo = 100;
 
         while ($row = $data->fetch_one())
         {

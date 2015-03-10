@@ -3,7 +3,8 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=0">
+
         <meta name="description" content="">
         <meta name="author" content="">
 
@@ -105,7 +106,7 @@
                                 {{ tag.te }}
                             </button>
                         </div>
-                        <div class="story-report" ng-show="userHash != post.uh">
+                        <div class="story-report">
                             <a href="javascript: void()" ng-click="reportPost(post)">Report</a>
                         </div>
                     </div>
@@ -139,8 +140,9 @@
                     <a name="footer-tab-privacy-section"></a>
                     <h2>Privacy Policy</h2>
                     <p>
-                        Don't post anything private and it won't be stored; later retrieved and publicly displayed; forwarded to your grandmother; re-posted to Reddit; posted to 9gag and then re-re-posted to Reddit; and finally a completely unrelated post is made to Slashdot a couple of days later. In short,
-                        don't post anything you don't want other people to see or read.
+                        No personal identifying information is stored on this server. No logs are kept, and no login service is provided. A mathematical hash of
+                        partially identifying (browser useragent and IP address) information is stored along with the post for statistical purposes, but cannot
+                        be reversed without access to the original data (which we do not store).
                     </p>
                 </div>
                 <div style="display: none" id="footer-tab-terms-content">

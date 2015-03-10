@@ -312,8 +312,7 @@ class Post extends root {
             'ti'=>$this->timestamp,
             'a'=>array('f'=>$this->ageFrom, 't'=>$this->ageTo),
             'v'=>array('u'=>$this->upVotes, 'd'=>$this->downVotes),
-            'ta'=>$tagJsonArray,
-            'uh'=>$this->userHash
+            'ta'=>$tagJsonArray
         );
     }
 

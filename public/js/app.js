@@ -657,8 +657,13 @@
             }, true);
         }
 
+        $scope.currentWindowWidth = 0;
+
         $( window ).resize(function() {
-            $scope.parseWindowSize();
+            if ($(window).width() != $scope.currentWindowWidth) {
+                $scope.currentWindowWidth = $(window).width();
+                $scope.parseWindowSize();
+            }
         });
     });
 

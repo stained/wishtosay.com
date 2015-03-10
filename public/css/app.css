@@ -387,7 +387,10 @@ textarea {
     }
 }
 
-@media only screen and (min-width: 1px) and (-webkit-min-device-pixel-ratio: 1.5) and (min-resolution: 144dpi) {
+@media only screen and (min-width: 1px)
+       and (-webkit-min-device-pixel-ratio: 1.5)
+       and (min-resolution: 144dpi) {
+
     .header {
         height: 92px;
         background: url("/img/header/small@2x.png") no-repeat #343338;
@@ -396,7 +399,10 @@ textarea {
     }
 }
 
-@media only screen and (min-width: 500px)  and (-webkit-min-device-pixel-ratio: 1.5)  and (min-resolution: 144dpi) {
+@media only screen and (min-width: 500px)
+       and (-webkit-min-device-pixel-ratio: 1.5)
+       and (min-resolution: 144dpi) {
+
     .header {
         height: 144px;
         background: url("/img/header/med@2x.png") no-repeat #343338;
@@ -405,7 +411,10 @@ textarea {
     }
 }
 
-@media only screen and (min-width: 640px) and (-webkit-min-device-pixel-ratio: 1.5) and (min-resolution: 144dpi) {
+@media only screen and (min-width: 640px)
+       and (-webkit-min-device-pixel-ratio: 1.5)
+       and (min-resolution: 144dpi) {
+
     .header {
         height: 184px;
         background: url("/img/header/med-large@2x.png") no-repeat #343338;
@@ -414,7 +423,10 @@ textarea {
     }
 }
 
-@media only screen and (min-width: 900px) and (-webkit-min-device-pixel-ratio: 1.5) and (min-resolution: 144dpi) {
+@media only screen and (min-width: 900px)
+       and (-webkit-min-device-pixel-ratio: 1.5)
+       and (min-resolution: 144dpi) {
+
     .header {
         height: 259px;
         background: url("/img/header/large@2x.png") no-repeat #343338;
@@ -578,7 +590,7 @@ ul.footer-tabs li.selected {
     border-bottom: 4px solid #343338;
     box-shadow: inset 1px 1px 1px #202020;
     border-radius: 10px 10px 3px 3px;
-    padding: 6px 6px 8px 8px;
+    padding: 6px 6px 7px 7px;
     text-align: center;
     line-height: 30px;
     background: #343338;

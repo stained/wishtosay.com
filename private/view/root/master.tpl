@@ -141,7 +141,7 @@
                     <h2>Privacy Policy</h2>
                     <p>
                         No personal identifying information is stored on this server. No logs are kept, and no login service is provided. A mathematical hash of
-                        partially identifying (browser useragent and IP address) information is stored along with the post for statistical purposes, but cannot
+                        partially identifying information (browser useragent and IP address) is stored along with the post for statistical purposes, but cannot
                         be reversed without access to the original data (which we do not store).
                     </p>
                 </div>

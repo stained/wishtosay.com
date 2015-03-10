@@ -301,7 +301,8 @@ textarea {
 }
 
 
-@media only screen and (min-width: 1px) {
+@media
+only screen and (min-width: 1px) {
     .story {
         width: 98%;
     }
@@ -387,9 +388,10 @@ textarea {
     }
 }
 
-@media only screen and (min-width: 1px)
-       and (-webkit-min-device-pixel-ratio: 1.5)
-       and (min-resolution: 144dpi) {
+@media (min-width: 1px) and
+       (-webkit-min-device-pixel-ratio: 1.5),
+       (min-width: 1px) and
+       (min-resolution: 144dpi) {
 
     .header {
         height: 92px;
@@ -399,9 +401,10 @@ textarea {
     }
 }
 
-@media only screen and (min-width: 500px)
-       and (-webkit-min-device-pixel-ratio: 1.5)
-       and (min-resolution: 144dpi) {
+@media (min-width: 500px) and
+       (-webkit-min-device-pixel-ratio: 1.5),
+       (min-width: 500px) and
+       (min-resolution: 144dpi) {
 
     .header {
         height: 144px;
@@ -411,9 +414,10 @@ textarea {
     }
 }
 
-@media only screen and (min-width: 640px)
-       and (-webkit-min-device-pixel-ratio: 1.5)
-       and (min-resolution: 144dpi) {
+@media (min-width: 640px) and
+       (-webkit-min-device-pixel-ratio: 1.5),
+       (min-width: 640px) and
+       (min-resolution: 144dpi) {
 
     .header {
         height: 184px;
@@ -423,9 +427,10 @@ textarea {
     }
 }
 
-@media only screen and (min-width: 900px)
-       and (-webkit-min-device-pixel-ratio: 1.5)
-       and (min-resolution: 144dpi) {
+@media (min-width: 900px) and
+       (-webkit-min-device-pixel-ratio: 1.5),
+       (min-width: 900px) and
+       (min-resolution: 144dpi) {
 
     .header {
         height: 259px;

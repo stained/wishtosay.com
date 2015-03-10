@@ -33,8 +33,6 @@
         <title>Wish to Say</title>
 
         <link rel="stylesheet" href="/css/all.min.css">
-        <script src="/js/all.min.js"></script>
-
         <link href='http://fonts.googleapis.com/css?family=Open+Sans:700,300,400' rel='stylesheet' type='text/css'>
     </head>
     <body>
@@ -157,6 +155,7 @@
     </body>
 </html>
 
+<script async src="/js/all.min.js"></script>
 <script type="text/javascript">
 
     $(document).ready(function()
